@@ -1,0 +1,85 @@
+plugins {
+	id 'java'
+	id 'java-library'
+	id 'maven-publish'
+	id 'org.springframework.boot' version '2.7.17'
+	id 'io.spring.dependency-management' version '1.1.3'
+	id 'jacoco'
+}
+
+// Configuración de JaCoCo
+jacoco {
+	toolVersion = "0.8.9"
+	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+// Configuración de las fuentes y clases para JaCoCo (excluyendo los paquetes y clases deseadas)
+jacocoTestReport {
+	dependsOn test // Ejecutar pruebas antes de generar el informe de cobertura
+	reports {
+		xml.required = false
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: 'com/medicine/register/infrastructure/config/**')
+			fileTree(dir: it, exclude: 'com/medicine/register/application/**')
+			fileTree(dir: it, exclude: 'com/medicine/register/domain/model/**')
+			fileTree(dir: it, exclude: 'com/medicine/register/RegisterApplication.class')
+		}))
+	}
+}
+
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	google()
+}
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'commons-codec:commons-codec:1.15'
+	implementation 'org.apache.commons:commons-lang3:3.13.0'
+
+	//google
+	implementation 'com.google.code.gson:gson:2.10.1'
+	//aws
+	api 'com.amazonaws:aws-java-sdk-dynamodb:1.12.533'
+	api 'com.github.derjust:spring-data-dynamodb:5.1.0'
+
+	//lombok
+    implementation 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	//mapstruct
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+	//graphql
+	implementation 'com.graphql-java:graphql-java:21.0'
+	implementation 'org.springframework.boot:spring-boot-starter-graphql'
+	implementation 'org.springframework.graphql:spring-graphql'
+    //test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework:spring-webflux'
+	testImplementation 'org.springframework.graphql:spring-graphql-test'
+}
+
+group = 'com.medicine.register'
+version = '0.0.1-SNAPSHOT'
+description = 'Registro'
+
