@@ -22,18 +22,17 @@ public class PatientHandler implements IPatientHandler{
      */
     @Override
     public void createPatient(PatientRequest patientRequest) {
-        String passwordEncryption = patientEncryptionServicePort.encrypt(patientRequest.getPassword());
-        Patient patient = patientMapper.toPatient(patientRequest, passwordEncryption);
+        Patient patient = patientMapper.toPatient(patientRequest);
         patientServicePort.createPatient(patient);
     }
 
     /**
-     * @param id patient to get
+     * @param email email´s patient to get
      * @return patient
      */
     @Override
-    public RequestResponse getPatient(String id) {
-        Patient patient = patientServicePort.getPatient(id);
+    public RequestResponse getPatient(String email) {
+        Patient patient = patientServicePort.getPatient(email);
         return patientMapper.toRequestResponse(patient);
     }
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestResponse {
-    private String id;
     private String firstName;
     private String secondName;
     private String firstSurName;

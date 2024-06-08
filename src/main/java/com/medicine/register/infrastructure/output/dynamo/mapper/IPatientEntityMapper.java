@@ -10,10 +10,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IPatientEntityMapper {
 
-    default PatientEntity toPatientEntity(Patient patient){
-        PatientEntity patientEntity = new PatientEntity();
-        patientEntity.setPatient(patient.getPassword());
-    }
-
+    PatientEntity toPatientEntity(Patient patient);
     Patient toPatient(PatientEntity patientEntity);
+
 }

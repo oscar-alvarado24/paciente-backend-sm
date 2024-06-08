@@ -20,11 +20,11 @@ public class PatientUseCase implements IPatientServicePort {
     }
 
     /**
-     * @param id of patient to get
+     * @param email´s patient to get
      * @return patient
      */
     @Override
-    public Patient getPatient(String id) {
-        return patientPersistencePort.getPatient(id);
+    public Patient getPatient(String email) {
+        return patientPersistencePort.getPatient(email);
     }
 }

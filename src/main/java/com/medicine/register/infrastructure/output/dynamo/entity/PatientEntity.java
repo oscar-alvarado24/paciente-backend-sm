@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PatientEntity {
 
     @DynamoDBHashKey
-    private String id;
+    private String email;
 
     @DynamoDBAttribute
     private String firstName;
@@ -27,8 +27,6 @@ public class PatientEntity {
     @DynamoDBAttribute
     private String address;
     @DynamoDBAttribute
-    private String email;
-    @DynamoDBAttribute
     private String landline;
     @DynamoDBAttribute
     private String cellPhone;
@@ -38,6 +36,4 @@ public class PatientEntity {
     private String descriptionResidence;
     @DynamoDBAttribute
     private String neighborhood;
-    @DynamoDBAttribute
-    private String password;
 }

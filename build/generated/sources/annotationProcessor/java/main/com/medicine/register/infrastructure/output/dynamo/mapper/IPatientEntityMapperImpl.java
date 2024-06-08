@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-13T12:37:38-0500",
-    comments = "version: 1.5.3.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.1.1.jar, environment: Java 11.0.18 (Amazon.com Inc.)"
+    date = "2024-06-07T20:14:39-0500",
+    comments = "version: 1.5.3.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.1.1.jar, environment: Java 19.0.2 (Amazon.com Inc.)"
 )
 @Component
 public class IPatientEntityMapperImpl implements IPatientEntityMapper {
@@ -21,18 +21,16 @@ public class IPatientEntityMapperImpl implements IPatientEntityMapper {
 
         PatientEntity patientEntity = new PatientEntity();
 
-        patientEntity.setId( patient.getId() );
+        patientEntity.setEmail( patient.getEmail() );
         patientEntity.setFirstName( patient.getFirstName() );
         patientEntity.setSecondName( patient.getSecondName() );
         patientEntity.setFirstSurName( patient.getFirstSurName() );
         patientEntity.setSecondSurName( patient.getSecondSurName() );
         patientEntity.setAddress( patient.getAddress() );
-        patientEntity.setEmail( patient.getEmail() );
         patientEntity.setLandline( patient.getLandline() );
         patientEntity.setCellPhone( patient.getCellPhone() );
         patientEntity.setDescriptionResidence( patient.getDescriptionResidence() );
         patientEntity.setNeighborhood( patient.getNeighborhood() );
-        patientEntity.setPassword( patient.getPassword() );
 
         return patientEntity;
     }
@@ -45,7 +43,6 @@ public class IPatientEntityMapperImpl implements IPatientEntityMapper {
 
         Patient patient = new Patient();
 
-        patient.setId( patientEntity.getId() );
         patient.setFirstName( patientEntity.getFirstName() );
         patient.setSecondName( patientEntity.getSecondName() );
         patient.setFirstSurName( patientEntity.getFirstSurName() );
@@ -56,7 +53,6 @@ public class IPatientEntityMapperImpl implements IPatientEntityMapper {
         patient.setCellPhone( patientEntity.getCellPhone() );
         patient.setDescriptionResidence( patientEntity.getDescriptionResidence() );
         patient.setNeighborhood( patientEntity.getNeighborhood() );
-        patient.setPassword( patientEntity.getPassword() );
 
         return patient;
     }

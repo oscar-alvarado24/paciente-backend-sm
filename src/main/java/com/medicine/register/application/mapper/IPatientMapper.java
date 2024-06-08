@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IPatientMapper {
-     Patient toPatient (PatientRequest patientRequest, String password);
+     Patient toPatient (PatientRequest patientRequest);
 
     RequestResponse toRequestResponse (Patient patient);
 }

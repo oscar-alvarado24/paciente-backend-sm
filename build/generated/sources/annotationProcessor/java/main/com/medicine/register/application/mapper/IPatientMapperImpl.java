@@ -8,35 +8,32 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-13T12:37:37-0500",
-    comments = "version: 1.5.3.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.1.1.jar, environment: Java 11.0.18 (Amazon.com Inc.)"
+    date = "2024-06-07T20:14:39-0500",
+    comments = "version: 1.5.3.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.1.1.jar, environment: Java 19.0.2 (Amazon.com Inc.)"
 )
 @Component
 public class IPatientMapperImpl implements IPatientMapper {
 
     @Override
-    public Patient toPatient(PatientRequest patientRequest, String password) {
-        if ( patientRequest == null && password == null ) {
+    public Patient toPatient(PatientRequest patientRequest) {
+        if ( patientRequest == null ) {
             return null;
         }
 
         Patient patient = new Patient();
 
-        if ( patientRequest != null ) {
-            patient.setId( patientRequest.getId() );
-            patient.setFirstName( patientRequest.getFirstName() );
-            patient.setSecondName( patientRequest.getSecondName() );
-            patient.setFirstSurName( patientRequest.getFirstSurName() );
-            patient.setSecondSurName( patientRequest.getSecondSurName() );
-            patient.setAddress( patientRequest.getAddress() );
-            patient.setEmail( patientRequest.getEmail() );
-            patient.setLandline( patientRequest.getLandline() );
-            patient.setCellPhone( patientRequest.getCellPhone() );
-            patient.setResidencesType( patientRequest.getResidencesType() );
-            patient.setDescriptionResidence( patientRequest.getDescriptionResidence() );
-            patient.setNeighborhood( patientRequest.getNeighborhood() );
-            patient.setPassword( patientRequest.getPassword() );
-        }
+        patient.setId( patientRequest.getId() );
+        patient.setFirstName( patientRequest.getFirstName() );
+        patient.setSecondName( patientRequest.getSecondName() );
+        patient.setFirstSurName( patientRequest.getFirstSurName() );
+        patient.setSecondSurName( patientRequest.getSecondSurName() );
+        patient.setAddress( patientRequest.getAddress() );
+        patient.setEmail( patientRequest.getEmail() );
+        patient.setLandline( patientRequest.getLandline() );
+        patient.setCellPhone( patientRequest.getCellPhone() );
+        patient.setResidencesType( patientRequest.getResidencesType() );
+        patient.setDescriptionResidence( patientRequest.getDescriptionResidence() );
+        patient.setNeighborhood( patientRequest.getNeighborhood() );
 
         return patient;
     }
@@ -49,7 +46,6 @@ public class IPatientMapperImpl implements IPatientMapper {
 
         RequestResponse requestResponse = new RequestResponse();
 
-        requestResponse.setId( patient.getId() );
         requestResponse.setFirstName( patient.getFirstName() );
         requestResponse.setSecondName( patient.getSecondName() );
         requestResponse.setFirstSurName( patient.getFirstSurName() );

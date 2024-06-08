@@ -4,5 +4,5 @@ import com.medicine.register.domain.model.Patient;
 
 public interface IPatientServicePort {
     void createPatient (Patient patient);
-    Patient getPatient (String id);
+    Patient getPatient (String email);
 }

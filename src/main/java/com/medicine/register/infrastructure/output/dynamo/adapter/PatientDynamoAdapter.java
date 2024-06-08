@@ -24,13 +24,13 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
     }
 
     /**
-     * @param id patient to get
+     * @param email patient to get
      * @return patient
      */
     @Override
-    public Patient getPatient(String id) {
-        String exceptionMessage = String.format(Constants.PATIENT_NOT_FOUND,id);
-        PatientEntity patientEntity = patientRepository.findById(id).orElseThrow(() -> new PatientNotFoundException(exceptionMessage));
+    public Patient getPatient(String email) {
+        String exceptionMessage = String.format(Constants.PATIENT_NOT_FOUND, email);
+        PatientEntity patientEntity = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException(exceptionMessage));
         return patientMapper.toPatient(patientEntity);
     }
 }
