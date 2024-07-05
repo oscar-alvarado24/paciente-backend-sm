@@ -1,7 +1,7 @@
-package com.medicine.register.domain.usecase;
+package com.medicine.patient.domain.usecase;
 
-import com.medicine.register.domain.api.IPatientEncryptionServicePort;
-import com.medicine.register.domain.spi.IPatientEncryptionPersistencePort;
+import com.medicine.patient.domain.api.IPatientEncryptionServicePort;
+import com.medicine.patient.domain.spi.IPatientEncryptionPersistencePort;
 
 public class PatientEncryptionUseCase implements IPatientEncryptionServicePort {
     private final IPatientEncryptionPersistencePort patientEncryptionPersistancePort;

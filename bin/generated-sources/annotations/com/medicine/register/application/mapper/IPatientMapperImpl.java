@@ -1,8 +1,8 @@
-package com.medicine.register.application.mapper;
+package com.medicine.patient.application.mapper;
 
-import com.medicine.register.application.dto.PatientRequest;
-import com.medicine.register.application.dto.RequestResponse;
-import com.medicine.register.domain.model.Patient;
+import com.medicine.patient.application.dto.PatientRequest;
+import com.medicine.patient.application.dto.RequestResponse;
+import com.medicine.patient.domain.model.Patient;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 

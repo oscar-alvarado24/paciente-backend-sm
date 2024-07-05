@@ -1,7 +1,7 @@
-package com.medicine.register.infrastructure.encryption.adapter;
+package com.medicine.patient.infrastructure.encryption.adapter;
 
-import com.medicine.register.domain.spi.IPatientEncryptionPersistencePort;
-import com.medicine.register.infrastructure.encryption.systemEncryption.Encryption;
+import com.medicine.patient.domain.spi.IPatientEncryptionPersistencePort;
+import com.medicine.patient.infrastructure.encryption.systemEncryption.Encryption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

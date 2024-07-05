@@ -1,4 +1,4 @@
-package com.medicine.register.domain.model;
+package com.medicine.patient.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Patient {
-    private String id;
     private String firstName;
     private String secondName;
     private String firstSurName;

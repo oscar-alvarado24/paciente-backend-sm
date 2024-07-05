@@ -1,4 +1,4 @@
-package com.medicine.register.application.dto;
+package com.medicine.patient.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

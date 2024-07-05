@@ -1,20 +1,17 @@
-package com.medicine.register.application.dto;
+package com.medicine.patient.application.dto;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
 public class PatientRequest {
-    private String id;
     private String firstName;
     private String secondName;
     private String firstSurName;

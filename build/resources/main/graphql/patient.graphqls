@@ -28,6 +28,7 @@ type Mutation {
 }
 
 type Query{
-    getPatient(id:String):RequestResponse
+    getPatient(email:String):RequestResponse
+    validateEmail(email:String):String
 }
 

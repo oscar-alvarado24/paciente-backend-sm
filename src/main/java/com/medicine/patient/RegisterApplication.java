@@ -1,9 +1,9 @@
-package com.medicine.register;
+package com.medicine.patient;
 
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.medicine.register.infrastructure.util.Constants;
+import com.medicine.patient.infrastructure.util.Constants;
 
 @SpringBootApplication
 @EnableDynamoDBRepositories(basePackages = Constants.BASE_PACKAGES_REPOSITORY)

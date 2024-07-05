@@ -1,4 +1,4 @@
-package com.medicine.register.infrastructure.exception;
+package com.medicine.patient.infrastructure.exception;
 
 public class PatientNotFoundException extends RuntimeException {
     /**

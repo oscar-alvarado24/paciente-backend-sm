@@ -1,4 +1,4 @@
-package com.medicine.register.domain.spi;
+package com.medicine.patient.domain.spi;
 
 public interface IPatientEncryptionPersistencePort {
     String encrypt(String word);

@@ -1,4 +1,4 @@
-package com.medicine.register.infrastructure.exception;
+package com.medicine.patient.infrastructure.exception;
 
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;

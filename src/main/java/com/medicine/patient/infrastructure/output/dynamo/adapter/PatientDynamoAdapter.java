@@ -1,13 +1,15 @@
-package com.medicine.register.infrastructure.output.dynamo.adapter;
+package com.medicine.patient.infrastructure.output.dynamo.adapter;
 
-import com.medicine.register.domain.model.Patient;
-import com.medicine.register.domain.spi.IPatientPersistencePort;
-import com.medicine.register.infrastructure.exception.PatientNotFoundException;
-import com.medicine.register.infrastructure.output.dynamo.entity.PatientEntity;
-import com.medicine.register.infrastructure.output.dynamo.mapper.IPatientEntityMapper;
-import com.medicine.register.infrastructure.output.dynamo.repository.IPatientRepository;
-import com.medicine.register.infrastructure.util.Constants;
+import com.medicine.patient.domain.model.Patient;
+import com.medicine.patient.domain.spi.IPatientPersistencePort;
+import com.medicine.patient.infrastructure.exception.PatientNotFoundException;
+import com.medicine.patient.infrastructure.output.dynamo.entity.PatientEntity;
+import com.medicine.patient.infrastructure.output.dynamo.mapper.IPatientEntityMapper;
+import com.medicine.patient.infrastructure.output.dynamo.repository.IPatientRepository;
+import com.medicine.patient.infrastructure.util.Constants;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class PatientDynamoAdapter implements IPatientPersistencePort {
@@ -32,5 +34,15 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
         String exceptionMessage = String.format(Constants.PATIENT_NOT_FOUND, email);
         PatientEntity patientEntity = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException(exceptionMessage));
         return patientMapper.toPatient(patientEntity);
+    }
+
+    /**
+     * @param email email´s patient to  validate
+     * @return String
+     */
+    @Override
+    public String validateEmail(String email) {
+        Optional<PatientEntity> patient = patientRepository.findByEmail(email);
+        return patient.isPresent() ? Constants.PATIENT_EXIST : Constants.PATIENT_DONT_EXIST;
     }
 }

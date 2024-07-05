@@ -1,10 +1,12 @@
-package com.medicine.register.infrastructure.input.graphql;
+package com.medicine.patient.infrastructure.input.graphql;
 
-import com.medicine.register.application.dto.PatientRequest;
-import com.medicine.register.application.dto.RequestResponse;
-import com.medicine.register.application.handler.IPatientHandler;
-import com.medicine.register.infrastructure.util.Constants;
+import com.medicine.patient.application.dto.PatientRequest;
+import com.medicine.patient.application.dto.RequestResponse;
+import com.medicine.patient.application.handler.IPatientHandler;
+import com.medicine.patient.infrastructure.util.Constants;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.Arguments;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PatientController {
 
+    private static final Logger log = LoggerFactory.getLogger(PatientController.class);
     private final IPatientHandler patientHandler;
     @MutationMapping
     public String createPatient (@Arguments PatientRequest patient) {
@@ -31,6 +34,7 @@ public class PatientController {
 
     @QueryMapping
     public String validateEmail (@Argument String email){
+        log.info("El correo recivido es: " + email);
         return patientHandler.validateEmail(email);
     }
 

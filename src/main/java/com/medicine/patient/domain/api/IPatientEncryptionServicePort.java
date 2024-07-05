@@ -1,4 +1,4 @@
-package com.medicine.register.domain.api;
+package com.medicine.patient.domain.api;
 
 public interface IPatientEncryptionServicePort {
     String encrypt(String word);

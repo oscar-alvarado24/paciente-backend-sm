@@ -1,7 +1,7 @@
-package com.medicine.register.infrastructure.output.dynamo.mapper;
+package com.medicine.patient.infrastructure.output.dynamo.mapper;
 
-import com.medicine.register.domain.model.Patient;
-import com.medicine.register.infrastructure.output.dynamo.entity.PatientEntity;
+import com.medicine.patient.domain.model.Patient;
+import com.medicine.patient.infrastructure.output.dynamo.entity.PatientEntity;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 

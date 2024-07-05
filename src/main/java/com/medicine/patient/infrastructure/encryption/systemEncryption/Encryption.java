@@ -1,6 +1,6 @@
-package com.medicine.register.infrastructure.encryption.systemEncryption;
+package com.medicine.patient.infrastructure.encryption.systemEncryption;
 
-import com.medicine.register.infrastructure.util.Constants;
+import com.medicine.patient.infrastructure.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

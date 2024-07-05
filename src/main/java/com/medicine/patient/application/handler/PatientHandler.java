@@ -1,11 +1,11 @@
-package com.medicine.register.application.handler;
+package com.medicine.patient.application.handler;
 
-import com.medicine.register.application.dto.PatientRequest;
-import com.medicine.register.application.dto.RequestResponse;
-import com.medicine.register.application.mapper.IPatientMapper;
-import com.medicine.register.domain.api.IPatientEncryptionServicePort;
-import com.medicine.register.domain.api.IPatientServicePort;
-import com.medicine.register.domain.model.Patient;
+import com.medicine.patient.application.dto.PatientRequest;
+import com.medicine.patient.application.dto.RequestResponse;
+import com.medicine.patient.application.mapper.IPatientMapper;
+import com.medicine.patient.domain.api.IPatientEncryptionServicePort;
+import com.medicine.patient.domain.api.IPatientServicePort;
+import com.medicine.patient.domain.model.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

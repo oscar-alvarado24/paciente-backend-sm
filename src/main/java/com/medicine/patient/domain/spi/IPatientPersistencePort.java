@@ -1,7 +1,6 @@
-package com.medicine.register.domain.spi;
+package com.medicine.patient.domain.spi;
 
-import com.medicine.register.application.dto.RequestResponse;
-import com.medicine.register.domain.model.Patient;
+import com.medicine.patient.domain.model.Patient;
 
 public interface IPatientPersistencePort {
     void createPatient (Patient patient);

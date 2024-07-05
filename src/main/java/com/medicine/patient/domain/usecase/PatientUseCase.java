@@ -1,9 +1,8 @@
-package com.medicine.register.domain.usecase;
+package com.medicine.patient.domain.usecase;
 
-import com.medicine.register.application.dto.RequestResponse;
-import com.medicine.register.domain.api.IPatientServicePort;
-import com.medicine.register.domain.model.Patient;
-import com.medicine.register.domain.spi.IPatientPersistencePort;
+import com.medicine.patient.domain.api.IPatientServicePort;
+import com.medicine.patient.domain.model.Patient;
+import com.medicine.patient.domain.spi.IPatientPersistencePort;
 
 public class PatientUseCase implements IPatientServicePort {
     private final IPatientPersistencePort patientPersistencePort;

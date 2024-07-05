@@ -1,6 +1,6 @@
-package com.medicine.register.domain.api;
+package com.medicine.patient.domain.api;
 
-import com.medicine.register.domain.model.Patient;
+import com.medicine.patient.domain.model.Patient;
 
 public interface IPatientServicePort {
     void createPatient(Patient patient);
