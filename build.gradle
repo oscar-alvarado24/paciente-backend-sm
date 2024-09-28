@@ -1,7 +1,5 @@
 plugins {
 	id 'java'
-	id 'java-library'
-	id 'maven-publish'
 	id 'org.springframework.boot' version '3.2.6'
 	id 'io.spring.dependency-management' version '1.1.5'
 	id 'jacoco'
@@ -46,20 +44,29 @@ configurations {
 repositories {
 	mavenCentral()
 	google()
+	maven {
+		url 'https://eps-colombia-730335582376.d.codeartifact.us-east-1.amazonaws.com/maven/librerias/'
+		credentials {
+			username "aws"
+			password System.env.CODEARTIFACT_AUTH_TOKEN
+		}
+	}
 }
 
 dependencies {
+	implementation 'com.colombia.eps.library:generateSession:1.0.0'
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'commons-codec:commons-codec:1.15'
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
+	implementation 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
 
 	//google
 	implementation 'com.google.code.gson:gson:2.10.1'
-	//aws
-	api 'com.amazonaws:aws-java-sdk-dynamodb:1.12.533'
-	api 'com.github.derjust:spring-data-dynamodb:5.1.0'
+	//Dynamo
+	implementation 'software.amazon.awssdk:dynamodb:2.20.43'
+	implementation 'software.amazon.awssdk:dynamodb-enhanced:2.20.43'
 
 	//lombok
     implementation 'org.projectlombok:lombok'

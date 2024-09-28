@@ -15,8 +15,8 @@ public class PatientUseCase implements IPatientServicePort {
      * @param patient to save
      */
     @Override
-    public void createPatient(Patient patient) {
-        patientPersistencePort.createPatient(patient);
+    public String createPatient(Patient patient) {
+        return patientPersistencePort.createPatient(patient);
     }
 
     /**

@@ -3,27 +3,23 @@ package com.medicine.patient.application.handler;
 import com.medicine.patient.application.dto.PatientRequest;
 import com.medicine.patient.application.dto.RequestResponse;
 import com.medicine.patient.application.mapper.IPatientMapper;
-import com.medicine.patient.domain.api.IPatientEncryptionServicePort;
 import com.medicine.patient.domain.api.IPatientServicePort;
 import com.medicine.patient.domain.model.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PatientHandler implements IPatientHandler{
     private final IPatientMapper patientMapper;
     private final IPatientServicePort patientServicePort;
-    private final IPatientEncryptionServicePort patientEncryptionServicePort;
     /**
      * @param patientRequest to registry
      */
     @Override
-    public void createPatient(PatientRequest patientRequest) {
+    public String createPatient(PatientRequest patientRequest) {
         Patient patient = patientMapper.toPatient(patientRequest);
-        patientServicePort.createPatient(patient);
+        return patientServicePort.createPatient(patient);
     }
 
     /**
