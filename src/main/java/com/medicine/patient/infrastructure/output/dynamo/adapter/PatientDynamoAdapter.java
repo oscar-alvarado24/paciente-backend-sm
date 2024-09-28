@@ -47,6 +47,9 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
             return patientMapper.toPatient(patientEntity);
         } catch (Exception e) {
             log.error(e.getMessage());
+            if (e instanceof PatientNotFoundException) {
+                throw e;
+            }
             throw new ErrorConsultingPatient(String.format(Constants.ERROR_CONSULTING_PATIENT, email));
         }
     }
