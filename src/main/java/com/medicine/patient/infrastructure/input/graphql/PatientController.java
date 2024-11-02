@@ -12,11 +12,11 @@ import org.springframework.graphql.data.method.annotation.Arguments;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 @Component
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class PatientController {
 
     private static final Logger log = LoggerFactory.getLogger(PatientController.class);
