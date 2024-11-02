@@ -41,9 +41,8 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
      */
     @Override
     public Patient getPatient(String email) {
-        String exceptionMessage = String.format(Constants.PATIENT_NOT_FOUND, email);
         try (DynamoDbManager manager = new DynamoDbManager()) {
-            PatientEntity patientEntity = patientRepository.findPatientByEmail(email, manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(exceptionMessage));
+            PatientEntity patientEntity = patientRepository.findPatientByEmail(email, manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND, email)));
             return patientMapper.toPatient(patientEntity);
         } catch (Exception e) {
             log.error(e.getMessage());

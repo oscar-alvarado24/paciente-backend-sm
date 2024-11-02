@@ -14,17 +14,17 @@ type RequestResponse{
 
 type Mutation {
     createPatient (
-        firstName: String
+        firstName: String!
         secondName: String
-        firstSurName: String
-        secondSurName: String
-        address: String
-        email: String
-        landline: String
-        cellPhone: String
-        residencesType: String
+        firstSurName: String!
+        secondSurName: String!
+        address: String!
+        email: String!
+        landline: String!
+        cellPhone: String!
+        residencesType: String!
         descriptionResidence: String
-        neighborhood: String):String
+        neighborhood: String!):String
 }
 
 type Query{

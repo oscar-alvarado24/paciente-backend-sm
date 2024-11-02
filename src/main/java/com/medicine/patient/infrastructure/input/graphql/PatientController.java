@@ -3,6 +3,7 @@ package com.medicine.patient.infrastructure.input.graphql;
 import com.medicine.patient.application.dto.PatientRequest;
 import com.medicine.patient.application.dto.RequestResponse;
 import com.medicine.patient.application.handler.IPatientHandler;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class PatientController {
     private static final Logger log = LoggerFactory.getLogger(PatientController.class);
     private final IPatientHandler patientHandler;
     @MutationMapping
-    public String createPatient (@Arguments PatientRequest patient) {
+    public String createPatient (@Valid @Arguments PatientRequest patient) {
         return patientHandler.createPatient(patient);
     }
 
