@@ -28,6 +28,6 @@ public class PatientRepository implements IPatientRepository {
     @Override
     public String save(PatientEntity patient, DynamoDbTable<PatientEntity> table) {
         table.putItem(patient);
-        return Constants.MSG_CREATE_PATIENT;
+        return String.format(Constants.MSG_CREATE_PATIENT, patient.getFirstName(), patient.getFirstSurName());
     }
 }
