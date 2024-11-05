@@ -1,8 +1,17 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.6'
-	id 'io.spring.dependency-management' version '1.1.5'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
 	id 'jacoco'
+}
+
+group = 'com.colombia.eps'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
 
 // Configuración de JaCoCo
@@ -21,18 +30,12 @@ jacocoTestReport {
 	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: 'com/medicine/register/infrastructure/config/**')
-			fileTree(dir: it, exclude: 'com/medicine/register/application/**')
-			fileTree(dir: it, exclude: 'com/medicine/register/domain/model/**')
-			fileTree(dir: it, exclude: 'com/medicine/register/RegisterApplication.class')
+			fileTree(dir: it, exclude: 'com/colombia/eps/patient/infrastructure/config/**')
+			fileTree(dir: it, exclude: 'com/colombia/eps/patient/application/**')
+			fileTree(dir: it, exclude: 'com/colombia/eps/patient/domain/model/**')
+			fileTree(dir: it, exclude: 'com/colombia/eps/patient/RegisterApplication.class')
 		}))
 	}
-}
-
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
@@ -43,35 +46,28 @@ configurations {
 
 repositories {
 	mavenCentral()
-	google()
 	maven {
-		url 'https://eps-colombia-730335582376.d.codeartifact.us-east-1.amazonaws.com/maven/librerias/'
+		url 'https://eps-colombia-730335582376.d.codeartifact.us-east-1.amazonaws.com/maven/libreria/'
 		credentials {
 			username "aws"
-			password System.env.CODEARTIFACT_AUTH_TOKEN
+			password "eyJ2ZXIiOjEsImlzdSI6MTczMDgxMjc4MiwiZW5jIjoiQTEyOEdDTSIsInRhZyI6IlM2TEJFV211a0U3UlBla2t3ZUdKTkEiLCJleHAiOjE3MzA4NTU5ODIsImFsZyI6IkExMjhHQ01LVyIsIml2IjoiTE01NWM3N1Vmd05nbTBmWiJ9.ols_SfAIkDlBkeyGmyF3PA.G_0PpysFPxPZvsI6.y7oEjVZpL_bRr2DnlZfVM_LnxJp15jWpBhH9Xdl2YP_9nHYEzk-dQpNxC4mMQQ4a5_-_Vhd5DcL_9_nYYi-5t-_jUWYfgUok2tLazOztvevPMFgKPjt9oB5VTh9w1eI1whHyMueySBz-2PRg_Hq05fUc0jIeJY4XNi1Pb--t33BO7pPT06dj6__ek-lzfZ4fG10WZzqMCLZDeGoz9eXbJ_3Ew0HWRmkjO7lpVJperhJZiZ5fC7ZTSDKufRZBOFS5sziS0zz-0_LKcEJTN7n4Oa0GvKavnvz68btzfdGyxKA0zQjhzB2N0RBQbdaWRWU_ggoTThwNzBjQOKFLT41dHP_ivLhqKcMClbrY1_dQUl5Saq5w5quugLqkzW8zN3pwf5KQ1fJCyxLKtMccN6FfqteuJpnleWRZ0hKkIFGy52Ezgld5k-xU39krqGfHvxOG5dKZ3mQJvUqC6QXZBQBfY2KiIeIumTc1fMSaWumEMW4czULoHE06GZmJ-WYhO7HcUwbhtLiJ20_cKZOrN47BbPEF9QCqH7sXfZJ8-I1rejFTkzXSgeNksyymkitvV7U2CiGF4xN7r9oSPyP6RkPCoajcGJ7JZ79GvIY8AowU8IhhHhn7wKmLWppyeKGApCD7lFWpOFIKESwxMTV7goB_9hXGIBoxv10PlM7oyjWvLHumP9x4w_lfXTQig7O821_UWuh-OaQrFiggdL57enJ_GwiQOuK_ddLWNqE6ye_GlB9Sjk9XSjiSxJkHuKw3OZEOhePEjFZH22rJ4rVG5NvjGFO6CXBIBAT9a_8J5JYK_5na6o7qhdLxeTXFWt0--ZndVVbAZoMM097BotoOk42bR4AvY4q1CoQJxGKUvw4UopNf6UQcPa4Ev6_Lt9QWqn9v4-YN_zlxnCXz6r483hxzf7fSGPaShJvBhGQaffxVvLkVE4w8kUJ1O9ZIV9xbYxA_qfgXt0Flq6YKEBg_owOGDeh7THSUEr0MymWAtVGz9vHL4tg.vXw72MSYhY3_7Pswk4dZ7w"
 		}
 	}
 }
 
 dependencies {
-	implementation 'com.colombia.eps.library:generateSession:1.0.0'
-
+	implementation 'com.colombia.eps.library:generateSession:1.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'commons-codec:commons-codec:1.15'
-	implementation 'org.apache.commons:commons-lang3:3.13.0'
 	implementation 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
 
-	//google
-	implementation 'com.google.code.gson:gson:2.10.1'
 	//Dynamo
 	implementation 'software.amazon.awssdk:dynamodb:2.20.43'
 	implementation 'software.amazon.awssdk:dynamodb-enhanced:2.20.43'
 
 	//lombok
-    implementation 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
 	//mapstruct
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
@@ -80,11 +76,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation 'org.springframework.graphql:spring-graphql'
 	implementation 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.1.0'
-    //test
+
+	//cognito
+	implementation 'software.amazon.awssdk:cognitoidentityprovider:2.29.3'
+	implementation 'software.amazon.awssdk:sts:2.29.6'
+
+	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.graphql:spring-graphql-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-group = 'com.medicine.patient'
-version = '0.0.1-SNAPSHOT'
-
+tasks.named('test') {
+	useJUnitPlatform()
+}

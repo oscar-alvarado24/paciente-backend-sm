@@ -5,7 +5,7 @@ type RequestResponse{
     secondSurName: String
     address: String
     email: String
-    landline: String
+    citizenshipCard: Int
     cellPhone: String
     residencesType: String
     descriptionResidence: String
@@ -20,7 +20,7 @@ type Mutation {
         secondSurName: String!
         address: String!
         email: String!
-        landline: String!
+        citizenshipCard: Int!
         cellPhone: String!
         residencesType: String!
         descriptionResidence: String
