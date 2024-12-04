@@ -23,7 +23,7 @@ public final class Constants {
     public static final String VE_COGNITO_ROL = "COGNITO_ROL";
     public static final String ROLE_SESSION_NAME_COGNITO = "patient_service";
     public static final String MSG_NOT_CRESTE_USER_IN_USER_POOL = "No se pudo crear en cognito el paciente  %s";
-    public static final String MSG_NOT_ADD_USER_TO_GROUP = "No se pudo agregar al paciente %s al grupo de pacientes de cognito";
+    public static final String MSG_NOT_ADD_PATIENT_TO_PATIENT_GROUP = "No se pudo agregar al paciente %s %s al grupo de pacientes de cognito";
     public static final String PATIENT_GROUP = "PATIENT_GROUP";
     public static final String VE_AKI_COGNITO_USER = "AKI_COGNITO_USER";
     public static final String VE_SAK_COGNITO_USER = "SAK_COGNITO_USER";
@@ -31,5 +31,6 @@ public final class Constants {
     public static final String VE_AKI_DYNAMO_USER = "AKI_DYNAMO_USER";
     public static final String VE_SAK_DYNAMO_USER = "SAK_DYNAMO_USER";
     public static final String ASTERISK = "*";
+    public static final String MSG_FAIL_PROCESS_FOR_CREATE_USER = "Falló el proceso de cacion del usuario en cognito";
 }
 

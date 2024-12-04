@@ -28,13 +28,11 @@ public class PatientController {
 
     @QueryMapping
     public RequestResponse getPatient (@Argument String email){
-        log.info("El correo recivido es: " + email);
         return patientHandler.getPatient(email);
     }
 
     @QueryMapping
     public String validateEmail (@Argument String email){
-        log.info("El correo recivido es: " + email);
         return patientHandler.validateEmail(email);
     }
 

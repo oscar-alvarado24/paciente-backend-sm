@@ -9,7 +9,7 @@ import com.colombia.eps.patient.domain.usecase.PatientEncryptionUseCase;
 import com.colombia.eps.patient.domain.usecase.PatientUseCase;
 import com.colombia.eps.patient.infrastructure.encryption.adapter.PatientEncryptionAdapter;
 import com.colombia.eps.patient.infrastructure.encryption.systemencryption.Encryption;
-import com.colombia.eps.patient.infrastructure.output.cognito.CognitoAdapter;
+import com.colombia.eps.patient.infrastructure.output.cognito.adapter.CognitoAdapter;
 import com.colombia.eps.patient.infrastructure.output.dynamo.adapter.PatientDynamoAdapter;
 import com.colombia.eps.patient.infrastructure.output.dynamo.mapper.IPatientEntityMapper;
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.IPatientRepository;
