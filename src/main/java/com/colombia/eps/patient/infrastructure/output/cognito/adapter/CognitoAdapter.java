@@ -28,26 +28,13 @@ public class CognitoAdapter implements ICognitoPersistencePort {
      */
     @Override
     public void createPatientInUserPool(Patient patient) {
-        String userPoolId = System.getenv(Constants.VE_USER_POOL_ID);
-        String email = patient.getEmail();
-        String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + String.valueOf(patient.getCitizenshipCard() % 10000) + Constants.ASTERISK;
-        String cognitoRole = System.getenv(Constants.VE_COGNITO_ROL);
-        String accessKeyId = System.getenv(Constants.VE_AKI_COGNITO_USER);
-        String secretAccessKey = System.getenv(Constants.VE_SAK_COGNITO_USER);
-        Region region = Region.of(System.getenv(Constants.VE_REGION));
-        StaticCredentialsProvider credential = GenerateCredentials.createCredencials(accessKeyId, secretAccessKey, cognitoRole, Constants.ROLE_SESSION_NAME_COGNITO, region);
 
-        CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
-                .region(region)
-                .credentialsProvider(credential)
-                .build();
 
-        AdminCreateUserResponse createUser = createNewUser(cognitoClient, userPoolId, email, password);
-        if (createUser != null) {
-            addUserToGroup(cognitoClient, userPoolId, email);
+            AdminCreateUserResponse createUser = createNewUser(cognitoClient, userPoolId, email, password);
+            if (createUser != null) {
+                addUserToGroup(cognitoClient, userPoolId, email);
+            }
         }
-        cognitoClient.close();
-    }
 
     private AdminCreateUserResponse createNewUser(CognitoIdentityProviderClient cognitoClient,
                                      String userPoolId,
