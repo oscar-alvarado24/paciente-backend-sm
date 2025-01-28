@@ -11,4 +11,7 @@ public interface IPatientRepository {
     Optional<PatientEntity> findPatientByEmail(String email, DynamoDbTable<PatientEntity> table);
     String save(PatientEntity patient, DynamoDbTable<PatientEntity> table);
 
+    Optional<PatientEntity> findPatientById(String id, DynamoDbTable<PatientEntity> table);
+
+    String updatePatient(PatientEntity patient, DynamoDbTable<PatientEntity> table);
 }

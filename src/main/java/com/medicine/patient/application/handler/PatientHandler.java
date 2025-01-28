@@ -37,7 +37,18 @@ public class PatientHandler implements IPatientHandler{
      * @return String
      */
     @Override
-    public String validateEmail(String email) {
-        return patientServicePort.validateEmail(email);
+    public String validateStatus(String email) {
+        return patientServicePort.validateStatus(email);
     }
+
+    /**
+     * @param id of patient to change status
+     * @param status to apply
+     * @return confirmation message of successfully process
+     */
+    @Override
+    public String changeStatus(int id, String status) {
+        return patientServicePort.changeStatus(id, status);
+    }
+
 }

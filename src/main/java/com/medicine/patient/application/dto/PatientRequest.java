@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class PatientRequest {
+    private int id;
     private String firstName;
     private String secondName;
     private String firstSurName;

@@ -7,5 +7,7 @@ public interface IPatientServicePort {
 
     Patient getPatient(String email);
 
-    String validateEmail(String email);
+    String validateStatus(String email);
+
+    String changeStatus(int id, String status);
 }

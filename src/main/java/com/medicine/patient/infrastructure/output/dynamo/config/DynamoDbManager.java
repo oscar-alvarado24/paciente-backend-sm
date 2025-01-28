@@ -1,9 +1,9 @@
 package com.medicine.patient.infrastructure.output.dynamo.config;
 
-
-
+import com.colombia.eps.library.GenerateCredentials;
 import com.medicine.patient.infrastructure.exception.DynamoDbManagerException;
 import com.medicine.patient.infrastructure.output.dynamo.entity.PatientEntity;
+import com.medicine.patient.infrastructure.util.Constants;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -12,9 +12,6 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import com.medicine.patient.infrastructure.util.Constants;
-
-import static com.colombia.eps.library.GenerateSession.generateSession;
 
 @Slf4j
 public class DynamoDbManager implements AutoCloseable {
@@ -26,9 +23,13 @@ public class DynamoDbManager implements AutoCloseable {
     public DynamoDbManager() {
         try {
             String dynamoRole = System.getenv(Constants.DYNAMO_ROL);
-            StaticCredentialsProvider credential = generateSession(dynamoRole, Constants.ROLE_SESSION_NAME_DYNAMO);
+            String accessKeyId = System.getenv(Constants.VE_AKI_DYNAMO_USER);
+            String secretAccessKey = System.getenv(Constants.VE_SAK_DYNAMO_USER);
+            Region region = Region.of(System.getenv(Constants.VE_REGION));
+            StaticCredentialsProvider credential = GenerateCredentials.createCredencials(accessKeyId, secretAccessKey, dynamoRole, Constants.ROLE_SESSION_NAME_DYNAMO, region);
+
             this.dynamoDbClient = DynamoDbClient.builder()
-                    .region(Region.US_EAST_1)
+                    .region(region)
                     .credentialsProvider(credential)
                     .build();
             this.enhancedClient = DynamoDbEnhancedClient.builder()

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Patient {
+    int id;
     private String firstName;
     private String secondName;
     private String firstSurName;

@@ -7,5 +7,7 @@ public interface IPatientHandler {
     String createPatient(PatientRequest patient);
     RequestResponse getPatient (String id);
 
-    String validateEmail(String email);
+    String validateStatus(String email);
+
+    String changeStatus(int id, String status);
 }
