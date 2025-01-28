@@ -14,6 +14,7 @@ type RequestResponse{
 
 type Mutation {
     createPatient (
+        id: Int
         firstName: String
         secondName: String
         firstSurName: String
@@ -25,10 +26,13 @@ type Mutation {
         residencesType: String
         descriptionResidence: String
         neighborhood: String):String
+    changeStatus (
+        id: Int
+        status: String):String
 }
 
 type Query{
     getPatient(email:String):RequestResponse
-    validateEmail(email:String):String
+    validateStatus(email:String):String
 }
 

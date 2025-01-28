@@ -4,8 +4,10 @@ import com.medicine.patient.application.dto.PatientRequest;
 import com.medicine.patient.application.dto.RequestResponse;
 
 public interface IPatientHandler {
-    void createPatient(PatientRequest patient);
+    String createPatient(PatientRequest patient);
     RequestResponse getPatient (String id);
 
-    String validateEmail(String email);
+    String validateStatus(String email);
+
+    String changeStatus(int id, String status);
 }

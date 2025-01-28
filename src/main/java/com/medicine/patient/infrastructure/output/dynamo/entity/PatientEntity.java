@@ -1,39 +1,52 @@
 package com.medicine.patient.infrastructure.output.dynamo.entity;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.medicine.patient.infrastructure.util.Constants;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamoDBTable(tableName = "pacientes")
+@Setter
+@DynamoDbBean
 public class PatientEntity {
 
-    @DynamoDBHashKey
+    private String id;
     private String email;
-
-    @DynamoDBAttribute
+    @Getter
     private String firstName;
-    @DynamoDBAttribute
+    @Getter
     private String secondName;
-    @DynamoDBAttribute
+    @Getter
     private String firstSurName;
-    @DynamoDBAttribute
+    @Getter
     private String secondSurName;
-    @DynamoDBAttribute
+    @Getter
     private String address;
-    @DynamoDBAttribute
+    @Getter
     private String landline;
-    @DynamoDBAttribute
+    @Getter
     private String cellPhone;
-    @DynamoDBAttribute
+    @Getter
     private String patient;
-    @DynamoDBAttribute
+    @Getter
     private String descriptionResidence;
-    @DynamoDBAttribute
+    @Getter
     private String neighborhood;
+    @Getter
+    private Status status;
+
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+    @DynamoDbSecondaryPartitionKey(indexNames = Constants.EMAIL_INDEX)
+    public String getEmail() {
+        return email;
+    }
 }

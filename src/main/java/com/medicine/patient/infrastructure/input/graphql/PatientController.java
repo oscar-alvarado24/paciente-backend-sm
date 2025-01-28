@@ -3,7 +3,6 @@ package com.medicine.patient.infrastructure.input.graphql;
 import com.medicine.patient.application.dto.PatientRequest;
 import com.medicine.patient.application.dto.RequestResponse;
 import com.medicine.patient.application.handler.IPatientHandler;
-import com.medicine.patient.infrastructure.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +22,7 @@ public class PatientController {
     private final IPatientHandler patientHandler;
     @MutationMapping
     public String createPatient (@Arguments PatientRequest patient) {
-        patientHandler.createPatient(patient);
-        return String.format(Constants.MSG_CREATE_PATIENT, patient.getFirstName(), patient.getFirstSurName());
+        return patientHandler.createPatient(patient);
     }
 
     @QueryMapping
@@ -33,9 +31,12 @@ public class PatientController {
     }
 
     @QueryMapping
-    public String validateEmail (@Argument String email){
-        log.info("El correo recivido es: " + email);
-        return patientHandler.validateEmail(email);
+    public String validateStatus (@Argument String email){
+        return patientHandler.validateStatus(email);
     }
 
+    @MutationMapping
+    public String changeStatus (@Argument int id, @Argument String status){
+        return patientHandler.changeStatus(id, status);
+    }
 }

@@ -8,10 +8,8 @@ import com.medicine.patient.domain.api.IPatientServicePort;
 import com.medicine.patient.domain.model.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PatientHandler implements IPatientHandler{
     private final IPatientMapper patientMapper;
@@ -21,9 +19,9 @@ public class PatientHandler implements IPatientHandler{
      * @param patientRequest to registry
      */
     @Override
-    public void createPatient(PatientRequest patientRequest) {
+    public String createPatient(PatientRequest patientRequest) {
         Patient patient = patientMapper.toPatient(patientRequest);
-        patientServicePort.createPatient(patient);
+        return patientServicePort.createPatient(patient);
     }
 
     /**
@@ -41,7 +39,18 @@ public class PatientHandler implements IPatientHandler{
      * @return String
      */
     @Override
-    public String validateEmail(String email) {
-        return patientServicePort.validateEmail(email);
+    public String validateStatus(String email) {
+        return patientServicePort.validateStatus(email);
     }
+
+    /**
+     * @param id of patient to change status
+     * @param status to apply
+     * @return confirmation message of successfully process
+     */
+    @Override
+    public String changeStatus(int id, String status) {
+        return patientServicePort.changeStatus(id, status);
+    }
+
 }

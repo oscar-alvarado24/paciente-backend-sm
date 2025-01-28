@@ -15,8 +15,8 @@ public class PatientUseCase implements IPatientServicePort {
      * @param patient to save
      */
     @Override
-    public void createPatient(Patient patient) {
-        patientPersistencePort.createPatient(patient);
+    public String createPatient(Patient patient) {
+       return patientPersistencePort.createPatient(patient);
     }
 
     /**
@@ -33,7 +33,17 @@ public class PatientUseCase implements IPatientServicePort {
      * @return string
      */
     @Override
-    public String validateEmail(String email) {
-        return patientPersistencePort.validateEmail(email);
+    public String validateStatus(String email) {
+        return patientPersistencePort.validatePatient(email);
+    }
+
+    /**
+     * @param id
+     * @param status
+     * @return
+     */
+    @Override
+    public String changeStatus(int id, String status) {
+        return patientPersistencePort.changeStatus(id, status);
     }
 }
