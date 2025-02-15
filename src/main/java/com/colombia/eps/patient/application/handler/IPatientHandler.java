@@ -1,11 +1,12 @@
 package com.colombia.eps.patient.application.handler;
 
 import com.colombia.eps.patient.application.dto.PatientRequest;
-import com.colombia.eps.patient.application.dto.RequestResponse;
+import com.colombia.eps.patient.application.dto.PatientResponse;
 
 public interface IPatientHandler {
     String createPatient(PatientRequest patient);
-    RequestResponse getPatient (String id);
+    PatientResponse getPatient (String id);
 
-    String validateEmail(String email);
+    String validateStatus(String email);
+    String changeStatus(int id, String status);
 }

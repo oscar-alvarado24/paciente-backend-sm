@@ -37,7 +37,17 @@ public class PatientUseCase implements IPatientServicePort {
      * @return string
      */
     @Override
-    public String validateEmail(String email) {
-        return patientPersistencePort.validateEmail(email);
+    public String validateStatus(String email) {
+        return patientPersistencePort.validatePatient(email);
+    }
+
+    /**
+     * @param id of  patient to change status
+     * @param status to change
+     * @return confirmation message
+     */
+    @Override
+    public String changeStatus(int id, String status) {
+        return patientPersistencePort.changeStatus(id, status);
     }
 }

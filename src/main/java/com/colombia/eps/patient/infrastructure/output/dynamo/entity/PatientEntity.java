@@ -1,9 +1,15 @@
 package com.colombia.eps.patient.infrastructure.output.dynamo.entity;
 
 
-import lombok.*;
+import com.colombia.eps.patient.infrastructure.util.Constants;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,6 +17,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 @DynamoDbBean
 public class PatientEntity {
 
+    private String id;
     private String email;
     @Getter
     private String firstName;
@@ -32,8 +39,14 @@ public class PatientEntity {
     private String descriptionResidence;
     @Getter
     private String neighborhood;
+    @Getter
+    private Status status;
 
     @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+    @DynamoDbSecondaryPartitionKey(indexNames = Constants.EMAIL_INDEX)
     public String getEmail() {
         return email;
     }

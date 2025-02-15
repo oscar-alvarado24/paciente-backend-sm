@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestResponse {
+public class PatientResponse {
+    private int id;
     private String firstName;
     private String secondName;
     private String firstSurName;

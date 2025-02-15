@@ -6,13 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
 public class PatientRequest {
     @NotBlank(message = "El campo primer nombre no puede estar vacio")
     private String firstName;
@@ -21,8 +19,8 @@ public class PatientRequest {
     private String firstSurName;
     @NotBlank(message = "El campo segundo apellido no puede estar vacio")
     private String secondSurName;
-    @Min(value = 10000, message = "La cedula debe tener minimo 5 numeros")
-    private int citizenshipCard;
+    @Min(value = 10000, message = "La cedula debe tener minimo 5 digitos")
+    private int id;
     @NotBlank(message = "El campo direccion no puede estar vacio")
     private String address;
     @NotBlank(message = "El campo email no puede estar vacio")

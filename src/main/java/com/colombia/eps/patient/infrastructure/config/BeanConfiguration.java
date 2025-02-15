@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-@ComponentScan(basePackages = Constants.BASE_PACKAGES_REPOSITORY)
 public class BeanConfiguration {
     private final IPatientEntityMapper patientMapper;
 

@@ -30,7 +30,7 @@ public class CognitoAdapter implements ICognitoPersistencePort {
         try (CognitoManager cognitoManager = new CognitoManager()) {
             String userPoolId = System.getenv(Constants.VE_USER_POOL_ID);
             String email = patient.getEmail();
-            String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + patient.getCitizenshipCard() % 10000 + Constants.ASTERISK;
+            String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + patient.getId() % 10000 + Constants.ASTERISK;
             AdminCreateUserResponse createUser = createNewUser(cognitoManager.getCognitoClient(), userPoolId, email, password);
             if (createUser != null) {
                 addUserToGroup(cognitoManager.getCognitoClient(), userPoolId, email, patient.getFirstName(), patient.getFirstSurName());
@@ -52,7 +52,7 @@ public class CognitoAdapter implements ICognitoPersistencePort {
             return cognitoClient.adminCreateUser(userRequest);
         } catch (Exception exception) {
             log.error(exception.getMessage());
-            throw new NotCreateUserInUserPoolException(String.format(Constants.MSG_NOT_CRESTE_USER_IN_USER_POOL, email));
+            throw new NotCreateUserInUserPoolException(String.format(Constants.MSG_NOT_CREATE_USER_IN_USER_POOL, email));
         }
     }
 

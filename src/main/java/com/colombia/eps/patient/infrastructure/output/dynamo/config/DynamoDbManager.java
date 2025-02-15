@@ -1,7 +1,5 @@
 package com.colombia.eps.patient.infrastructure.output.dynamo.config;
 
-
-
 import com.colombia.eps.library.GenerateCredentials;
 import com.colombia.eps.patient.infrastructure.exception.DynamoDbManagerException;
 import com.colombia.eps.patient.infrastructure.output.dynamo.entity.PatientEntity;
@@ -14,7 +12,6 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import com.colombia.eps.patient.infrastructure.util.Constants;
-
 
 @Slf4j
 public class DynamoDbManager implements AutoCloseable {

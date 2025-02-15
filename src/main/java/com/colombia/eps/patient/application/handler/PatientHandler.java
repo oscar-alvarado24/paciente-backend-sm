@@ -1,7 +1,7 @@
 package com.colombia.eps.patient.application.handler;
 
 import com.colombia.eps.patient.application.dto.PatientRequest;
-import com.colombia.eps.patient.application.dto.RequestResponse;
+import com.colombia.eps.patient.application.dto.PatientResponse;
 import com.colombia.eps.patient.application.mapper.IPatientMapper;
 import com.colombia.eps.patient.domain.api.IPatientServicePort;
 import com.colombia.eps.patient.domain.model.Patient;
@@ -15,6 +15,7 @@ public class PatientHandler implements IPatientHandler{
     private final IPatientServicePort patientServicePort;
     /**
      * @param patientRequest to registry
+     * @return confirmation message of successfully process
      */
     @Override
     public String createPatient(PatientRequest patientRequest) {
@@ -27,7 +28,7 @@ public class PatientHandler implements IPatientHandler{
      * @return patient
      */
     @Override
-    public RequestResponse getPatient(String email) {
+    public PatientResponse getPatient(String email) {
         Patient patient = patientServicePort.getPatient(email);
         return patientMapper.toRequestResponse(patient);
     }
@@ -37,7 +38,18 @@ public class PatientHandler implements IPatientHandler{
      * @return String
      */
     @Override
-    public String validateEmail(String email) {
-        return patientServicePort.validateEmail(email);
+    public String validateStatus(String email) {
+        return patientServicePort.validateStatus(email);
     }
+
+    /**
+     * @param id of patient to change status
+     * @param status to apply
+     * @return confirmation message of successfully process
+     */
+    @Override
+    public String changeStatus(int id, String status) {
+        return patientServicePort.changeStatus(id, status);
+    }
+
 }
