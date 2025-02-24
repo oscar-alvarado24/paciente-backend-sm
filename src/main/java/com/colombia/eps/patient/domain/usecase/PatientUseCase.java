@@ -4,14 +4,17 @@ import com.colombia.eps.patient.domain.api.IPatientServicePort;
 import com.colombia.eps.patient.domain.model.Patient;
 import com.colombia.eps.patient.domain.spi.ICognitoPersistencePort;
 import com.colombia.eps.patient.domain.spi.IPatientPersistencePort;
+import com.colombia.eps.patient.domain.spi.ISesPersistencePort;
 
 public class PatientUseCase implements IPatientServicePort {
     private final IPatientPersistencePort patientPersistencePort;
     private final ICognitoPersistencePort cognitoPersistencePort;
+    private final ISesPersistencePort sesPersistencePort;
 
-    public PatientUseCase(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort) {
+    public PatientUseCase(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort, ISesPersistencePort sesPersistencePort) {
         this.patientPersistencePort = patientPersistencePort;
         this.cognitoPersistencePort = cognitoPersistencePort;
+        this.sesPersistencePort = sesPersistencePort;
     }
 
     /**
@@ -19,6 +22,7 @@ public class PatientUseCase implements IPatientServicePort {
      */
     @Override
     public String createPatient(Patient patient) {
+        sesPersistencePort.verifyEmailAddress(patient.getEmail());
         cognitoPersistencePort.createPatientInUserPool(patient);
         return patientPersistencePort.createPatient(patient);
     }

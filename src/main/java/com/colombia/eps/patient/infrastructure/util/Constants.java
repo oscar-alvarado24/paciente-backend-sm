@@ -21,7 +21,7 @@ public final class Constants {
     public static final String DYNAMO_ROL = "DYNAMO_ROL";
     public static final String PATIENT_EXIST = "email_registrado";
     public static final String PATIENT_DONT_EXIST = "email_no_registrado";
-    public static final String ROLE_SESSION_NAME_DYNAMO =  "dynamo-conn";
+    public static final String ROLE_SESSION_NAME_DYNAMO =  "dynamo-patient";
     public static final String ERROR_CONSULTING_PATIENT = "Fallo interno con el paciente %s.";
     public static final String TABLE_PATIENT_NAME = "pacientes";
     public static final String MSG_PATIENT_NOT_CREATED = "Error al crear al paciente %s %s";
@@ -40,5 +40,9 @@ public final class Constants {
     public static final String EMAIL = "email";
     public static final String ERROR_UPDATING_PATIENT = "Error al actualizar el %s con %s";
     public static final Object UPDATE_STATUS = "estado del paciente ";
+    public static final String ROLE_SESSION_NAME_SES = "ses_patient";
+    public static final String VE_SES_ROL = "SES_ROL";
+    public static final String VE_AKI_SES_USER = "AKI_SES_USER";
+    public static final String VE_SAK_SES_USER = "SAK_SES_USER";
 }
 

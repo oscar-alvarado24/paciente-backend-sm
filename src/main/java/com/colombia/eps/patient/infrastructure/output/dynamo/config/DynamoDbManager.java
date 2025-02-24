@@ -1,17 +1,18 @@
 package com.colombia.eps.patient.infrastructure.output.dynamo.config;
 
-import com.colombia.eps.library.GenerateCredentials;
 import com.colombia.eps.patient.infrastructure.exception.DynamoDbManagerException;
 import com.colombia.eps.patient.infrastructure.output.dynamo.entity.PatientEntity;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import com.colombia.eps.patient.infrastructure.util.Constants;
+
+import static com.colombia.eps.library.AwsCredentialGenerate.createCredential;
 
 @Slf4j
 public class DynamoDbManager implements AutoCloseable {
@@ -26,7 +27,7 @@ public class DynamoDbManager implements AutoCloseable {
             String accessKeyId = System.getenv(Constants.VE_AKI_DYNAMO_USER);
             String secretAccessKey = System.getenv(Constants.VE_SAK_DYNAMO_USER);
             Region region = Region.of(System.getenv(Constants.VE_REGION));
-            StaticCredentialsProvider credential = GenerateCredentials.createCredencials(accessKeyId, secretAccessKey, dynamoRole, Constants.ROLE_SESSION_NAME_DYNAMO, region);
+            AwsCredentialsProvider credential = createCredential(accessKeyId, secretAccessKey, dynamoRole, Constants.ROLE_SESSION_NAME_DYNAMO, region);
 
             this.dynamoDbClient = DynamoDbClient.builder()
                     .region(region)
@@ -45,8 +46,8 @@ public class DynamoDbManager implements AutoCloseable {
 
     @Override
     public void close() {
-        if (dynamoDbClient != null) {
-            dynamoDbClient.close();
+        if (this.dynamoDbClient != null) {
+            this.dynamoDbClient.close();
         }
     }
 

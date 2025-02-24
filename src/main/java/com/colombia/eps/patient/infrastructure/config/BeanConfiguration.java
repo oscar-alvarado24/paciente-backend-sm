@@ -5,6 +5,7 @@ import com.colombia.eps.patient.domain.api.IPatientServicePort;
 import com.colombia.eps.patient.domain.spi.ICognitoPersistencePort;
 import com.colombia.eps.patient.domain.spi.IPatientEncryptionPersistencePort;
 import com.colombia.eps.patient.domain.spi.IPatientPersistencePort;
+import com.colombia.eps.patient.domain.spi.ISesPersistencePort;
 import com.colombia.eps.patient.domain.usecase.PatientEncryptionUseCase;
 import com.colombia.eps.patient.domain.usecase.PatientUseCase;
 import com.colombia.eps.patient.infrastructure.encryption.adapter.PatientEncryptionAdapter;
@@ -14,6 +15,7 @@ import com.colombia.eps.patient.infrastructure.output.dynamo.adapter.PatientDyna
 import com.colombia.eps.patient.infrastructure.output.dynamo.mapper.IPatientEntityMapper;
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.IPatientRepository;
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.PatientRepository;
+import com.colombia.eps.patient.infrastructure.output.ses.adapter.SesAdapter;
 import com.colombia.eps.patient.infrastructure.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +43,7 @@ public class BeanConfiguration {
 
     @Bean
     public IPatientServicePort patientServicePort(){
-        return new PatientUseCase(patientPersistencePort(),cognitoPersistencePort());
+        return new PatientUseCase(patientPersistencePort(),cognitoPersistencePort(),sesPersistencePort());
     }
 
     @Bean
@@ -54,4 +56,8 @@ public class BeanConfiguration {
         return new PatientEncryptionUseCase(patientEncryptionPersistencePort(encryption));
     }
 
+    @Bean
+    public ISesPersistencePort sesPersistencePort(){
+        return new SesAdapter();
+    }
 }

@@ -1,16 +1,17 @@
 package com.colombia.eps.patient.infrastructure.output.cognito.config;
 
-import com.colombia.eps.library.GenerateCredentials;
+
 import com.colombia.eps.patient.infrastructure.util.Constants;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import static com.colombia.eps.library.AwsCredentialGenerate.createCredential;
 
+@Getter
 @Slf4j
 public class CognitoManager implements AutoCloseable {
-    @Getter
     private CognitoIdentityProviderClient cognitoClient;
 
     public CognitoManager() {
@@ -19,7 +20,7 @@ public class CognitoManager implements AutoCloseable {
             String accessKeyId = System.getenv(Constants.VE_AKI_COGNITO_USER);
             String secretAccessKey = System.getenv(Constants.VE_SAK_COGNITO_USER);
             Region region = Region.of(System.getenv(Constants.VE_REGION));
-            StaticCredentialsProvider credential = GenerateCredentials.createCredencials(accessKeyId, secretAccessKey, cognitoRole, Constants.ROLE_SESSION_NAME_COGNITO, region);
+            AwsCredentialsProvider credential = createCredential(accessKeyId, secretAccessKey, cognitoRole, Constants.ROLE_SESSION_NAME_COGNITO, region);
 
             this.cognitoClient = CognitoIdentityProviderClient.builder().region(region).credentialsProvider(credential).build();
         } catch (Exception exception) {
@@ -28,10 +29,9 @@ public class CognitoManager implements AutoCloseable {
     }
 
     /**
-     * @throws Exception generated during close process
      */
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (cognitoClient != null) {
             cognitoClient.close();
         }
