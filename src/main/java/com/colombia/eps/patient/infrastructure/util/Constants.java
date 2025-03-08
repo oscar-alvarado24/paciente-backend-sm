@@ -19,7 +19,7 @@ public final class Constants {
     public static final String TYPE_KEYSTORE = "JKS";
     public static final String PATIENT_NOT_FOUND = "El paciente con %s %s no existe";
     public static final String DYNAMO_ROL = "DYNAMO_ROL";
-    public static final String PATIENT_EXIST = "email_registrado";
+    public static final String PATIENT_EXIST = "usuario_activo";
     public static final String PATIENT_DONT_EXIST = "email_no_registrado";
     public static final String ROLE_SESSION_NAME_DYNAMO =  "dynamo-patient";
     public static final String ERROR_CONSULTING_PATIENT = "Fallo interno con el paciente %s.";
