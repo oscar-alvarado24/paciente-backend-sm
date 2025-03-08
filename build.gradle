@@ -1,12 +1,11 @@
-
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'jacoco'
 }
-
 group = 'com.colombia.eps'
+
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -34,9 +33,15 @@ jacocoTestReport {
 			fileTree(dir: it, exclude: 'com/colombia/eps/patient/infrastructure/config/**')
 			fileTree(dir: it, exclude: 'com/colombia/eps/patient/application/**')
 			fileTree(dir: it, exclude: 'com/colombia/eps/patient/domain/model/**')
-			fileTree(dir: it, exclude: 'com/colombia/eps/patient/RegisterApplication.class')
+			fileTree(dir: it, exclude: 'com/colombia/eps/patient/PatientApplication.class')
 		}))
 	}
+}
+
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
@@ -48,7 +53,7 @@ configurations {
 repositories {
 	mavenCentral()
 	maven {
-		url 'https://eps-colombia-730335582376.d.codeartifact.us-east-1.amazonaws.com/maven/libreria/'
+		url 'https://eps-de-colombia-730335582376.d.codeartifact.us-east-1.amazonaws.com/maven/librerias_edc/'
 		credentials {
 			username "aws"
 			password System.env.CODEARTIFACT_AUTH_TOKEN
@@ -57,14 +62,25 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.colombia.eps.library:generateSession:1.0.0'
+
+	implementation 'com.colombia.eps.library:generateCredentialsAccess:1.0.0'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
 
+	//aws
+	implementation platform('software.amazon.awssdk:bom:2.21.0')
 	//Dynamo
-	implementation 'software.amazon.awssdk:dynamodb:2.20.43'
-	implementation 'software.amazon.awssdk:dynamodb-enhanced:2.20.43'
+	implementation 'software.amazon.awssdk:dynamodb'
+	implementation 'software.amazon.awssdk:dynamodb-enhanced'
+	//cognito
+	implementation 'software.amazon.awssdk:cognitoidentityprovider'
+	//sts
+	implementation 'software.amazon.awssdk:sts'
+	//ses
+	implementation 'software.amazon.awssdk:sesv2'
+	implementation 'software.amazon.awssdk:sdk-core'
+
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -78,9 +94,7 @@ dependencies {
 	implementation 'org.springframework.graphql:spring-graphql'
 	implementation 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.1.0'
 
-	//cognito
-	implementation 'software.amazon.awssdk:cognitoidentityprovider:2.29.3'
-	implementation 'software.amazon.awssdk:sts:2.29.6'
+
 
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
