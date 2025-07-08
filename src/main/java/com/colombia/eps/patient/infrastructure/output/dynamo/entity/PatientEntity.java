@@ -34,13 +34,15 @@ public class PatientEntity {
     @Getter
     private String cellPhone;
     @Getter
-    private String patient;
+    private String residencesType;
     @Getter
     private String descriptionResidence;
     @Getter
     private String neighborhood;
     @Getter
     private Status status;
+    @Getter
+    private String photo;
 
     @DynamoDbPartitionKey
     public String getId() {

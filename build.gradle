@@ -53,7 +53,7 @@ configurations {
 repositories {
 	mavenCentral()
 	maven {
-		url 'https://eps-de-colombia-730335582376.d.codeartifact.us-east-1.amazonaws.com/maven/librerias_edc/'
+		url 'https://eps-colombia-998274970928.d.codeartifact.us-east-1.amazonaws.com/maven/eps-colombia/'
 		credentials {
 			username "aws"
 			password System.env.CODEARTIFACT_AUTH_TOKEN

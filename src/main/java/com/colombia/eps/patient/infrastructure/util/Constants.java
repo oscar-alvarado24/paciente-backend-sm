@@ -23,7 +23,7 @@ public final class Constants {
     public static final String PATIENT_DONT_EXIST = "email_no_registrado";
     public static final String ROLE_SESSION_NAME_DYNAMO =  "dynamo-patient";
     public static final String ERROR_CONSULTING_PATIENT = "Fallo interno con el paciente %s.";
-    public static final String TABLE_PATIENT_NAME = "pacientes";
+    public static final String TABLE_PATIENT_NAME = "patient";
     public static final String MSG_PATIENT_NOT_CREATED = "Error al crear al paciente %s %s";
     public static final String ROLE_SESSION_NAME_COGNITO = "patient_service";
     public static final String MSG_NOT_CREATE_USER_IN_USER_POOL = "No se pudo crear en cognito el paciente  %s";
@@ -44,5 +44,8 @@ public final class Constants {
     public static final String VE_SES_ROL = "SES_ROL";
     public static final String VE_AKI_SES_USER = "AKI_SES_USER";
     public static final String VE_SAK_SES_USER = "SAK_SES_USER";
+    public static final String ERROR_GET_PHOTO = "Error al obtener la foto del paciente con email %s";
+    public static final String ERROR_SAVE_PHOTO = "Error al guardar la foto del paciente con email %s";
+    public static final String PATIENT = "paciente";
 }
 

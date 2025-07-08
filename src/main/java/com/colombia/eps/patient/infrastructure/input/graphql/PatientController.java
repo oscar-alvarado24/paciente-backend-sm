@@ -19,12 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PatientController {
 
 
-    private final IPatientHandler patientHandler;
-    @MutationMapping
-    public String createPatient (@Arguments PatientRequest patient) {
-        return patientHandler.createPatient(patient);
-    }
-
     @QueryMapping
     public PatientResponse getPatient (@Argument String email){
         return patientHandler.getPatient(email);
@@ -35,8 +29,31 @@ public class PatientController {
         return patientHandler.validateStatus(email);
     }
 
+    @QueryMapping
+    public String getPhoto(@Argument String email) {
+        return patientHandler.getPhoto(email);
+    }
+
+    private final IPatientHandler patientHandler;
+    @MutationMapping
+    public String createPatient (@Arguments PatientRequest patient) {
+        return patientHandler.createPatient(patient);
+    }
+
     @MutationMapping
     public String changeStatus (@Argument int id, @Argument String status){
         return patientHandler.changeStatus(id, status);
+    }
+
+    @MutationMapping
+    public String savePhoto (@Argument String email, @Argument String photo){
+        log.info("email: {}", email);
+        return patientHandler.savePhoto(email, photo);
+    }
+
+    @MutationMapping
+    public String updatePatient (@Arguments PatientRequest patient){
+        int id = patient.getId();
+        return patientHandler.updatePatient(id, patient);
     }
 }

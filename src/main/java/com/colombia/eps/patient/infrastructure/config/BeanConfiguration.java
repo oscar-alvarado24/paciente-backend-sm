@@ -47,7 +47,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public IPatientEncryptionPersistencePort patientEncryptionPersistencePort(Encryption encryption){
+    public IPatientEncryptionPersistencePort patientEncryptionPersistencePort(Encryption encryption) {
         return new PatientEncryptionAdapter(encryption);
     }
 

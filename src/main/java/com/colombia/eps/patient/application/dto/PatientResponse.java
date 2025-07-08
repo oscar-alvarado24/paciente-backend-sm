@@ -20,4 +20,5 @@ public class PatientResponse {
     private String residencesType;
     private String descriptionResidence;
     private String neighborhood;
+    private String photo;
 }

@@ -10,29 +10,47 @@ type RequestResponse{
     residencesType: String
     descriptionResidence: String
     neighborhood: String
+    photo: String
 }
 
 type Mutation {
     createPatient (
-        id: Int
-        firstName: String
+        id: Int!
+        firstName: String!
         secondName: String
-        firstSurName: String
+        firstSurName: String!
         secondSurName: String
-        address: String
-        email: String
+        address: String!
+        email: String!
         landline: String
-        cellPhone: String
-        residencesType: String
+        cellPhone: String!
+        residencesType: String!
         descriptionResidence: String
-        neighborhood: String):String
+        neighborhood: String!):String
     changeStatus (
-        id: Int
-        status: String):String
+        id: Int!
+        status: String!):String
+    savePhoto (
+        email: String!
+        photo: String!): String
+    updatePatient (
+        id: Int!
+        firstName: String!
+        secondName: String
+        firstSurName: String!
+        secondSurName: String
+        address: String!
+        email: String!
+        landline: String!
+        cellPhone: String!
+        residencesType: String!
+        descriptionResidence: String
+        neighborhood: String!):String
 }
 
 type Query{
     getPatient(email:String):RequestResponse
     validateStatus(email:String):String
+    getPhoto(email:String):String
 }
 

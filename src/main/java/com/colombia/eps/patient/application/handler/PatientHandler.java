@@ -15,7 +15,7 @@ public class PatientHandler implements IPatientHandler{
     private final IPatientServicePort patientServicePort;
     /**
      * @param patientRequest to registry
-     * @return confirmation message of successfully process
+     * @return confirmation message of a successful process
      */
     @Override
     public String createPatient(PatientRequest patientRequest) {
@@ -50,6 +50,35 @@ public class PatientHandler implements IPatientHandler{
     @Override
     public String changeStatus(int id, String status) {
         return patientServicePort.changeStatus(id, status);
+    }
+
+    /**
+     * @param email of patient  to get photo
+     * @return photo in base64
+     */
+    @Override
+    public String getPhoto(String email) {
+        return patientServicePort.getPhoto(email);
+    }
+
+    /**
+     * @param email of patient to save photo
+     * @param photo in base64
+     * @return confirmation message of successfully process
+     */
+    @Override
+    public String savePhoto(String email, String photo) {
+        return patientServicePort.savePhoto(email, photo);
+    }
+
+    /**
+     * @param id of patient to update
+     * @param patient with new data
+     * @return confirmation message of successfully process
+     */
+    @Override
+    public String updatePatient(int id, PatientRequest patient) {
+        return patientServicePort.updatePatient(id, patientMapper.toPatient(patient));
     }
 
 }

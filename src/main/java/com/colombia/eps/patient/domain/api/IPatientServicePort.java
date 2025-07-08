@@ -10,4 +10,10 @@ public interface IPatientServicePort {
     String validateStatus(String email);
 
     String changeStatus(int id, String status);
+
+    String getPhoto(String email);
+
+    String savePhoto(String email, String photo);
+
+    String updatePatient(int id, Patient patient);
 }
