@@ -34,15 +34,6 @@ public class PatientHandler implements IPatientHandler{
     }
 
     /**
-     * @param email email´s patient to  validate
-     * @return String
-     */
-    @Override
-    public String validateStatus(String email) {
-        return patientServicePort.validateStatus(email);
-    }
-
-    /**
      * @param id of patient to change status
      * @param status to apply
      * @return confirmation message of successfully process
@@ -50,15 +41,6 @@ public class PatientHandler implements IPatientHandler{
     @Override
     public String changeStatus(int id, String status) {
         return patientServicePort.changeStatus(id, status);
-    }
-
-    /**
-     * @param email of patient  to get photo
-     * @return photo in base64
-     */
-    @Override
-    public String getPhoto(String email) {
-        return patientServicePort.getPhoto(email);
     }
 
     /**
@@ -79,6 +61,15 @@ public class PatientHandler implements IPatientHandler{
     @Override
     public String updatePatient(int id, PatientRequest patient) {
         return patientServicePort.updatePatient(id, patientMapper.toPatient(patient));
+    }
+
+    /**
+     * @param email of patient to validate ses registry
+     * @return message with the status of ses registry
+     */
+    @Override
+    public String validateStatusSesRegistration(String email) {
+        return patientServicePort.validateStatusSesRegistration(email);
     }
 
 }

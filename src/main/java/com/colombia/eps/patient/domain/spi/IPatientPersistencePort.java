@@ -4,12 +4,10 @@ import com.colombia.eps.patient.domain.model.Patient;
 
 public interface IPatientPersistencePort {
     String createPatient (Patient patient);
+
     Patient getPatient (String email);
-    String validatePatient(String email);
 
     String changeStatus(int id, String status);
-
-    String getPhoto(String email);
 
     String savePhoto(String email, String photo);
 

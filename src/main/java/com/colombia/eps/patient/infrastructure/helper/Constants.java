@@ -1,7 +1,9 @@
-package com.colombia.eps.patient.infrastructure.util;
+package com.colombia.eps.patient.infrastructure.helper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.Locale;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Constants {
@@ -19,8 +21,6 @@ public final class Constants {
     public static final String TYPE_KEYSTORE = "JKS";
     public static final String PATIENT_NOT_FOUND = "El paciente con %s %s no existe";
     public static final String DYNAMO_ROL = "DYNAMO_ROL";
-    public static final String PATIENT_EXIST = "usuario_activo";
-    public static final String PATIENT_DONT_EXIST = "email_no_registrado";
     public static final String ROLE_SESSION_NAME_DYNAMO =  "dynamo-patient";
     public static final String ERROR_CONSULTING_PATIENT = "Fallo interno con el paciente %s.";
     public static final String TABLE_PATIENT_NAME = "patient";
@@ -31,11 +31,9 @@ public final class Constants {
     public static final String PATIENT_GROUP = "PATIENT_GROUP";
     public static final String ASTERISK = "*";
     public static final String MSG_FAIL_PROCESS_FOR_CREATE_USER = "Falló el proceso de cacion del usuario en cognito";
-    public static final String PATIENT_RETIRED = "usuario_retirado";
     public static final String MSG_PROCESS_ERROR = "Fallo en el proceso %s con el email %s";
     public static final String PROC_VALIDATE_PATIENT = "validar paciente ";
     public static final String EMAIL_INDEX = "email-index";
-    public static final String PATIENT_INACTIVE = "Usuario_inactivo";
     public static final String ID = "cedula";
     public static final String EMAIL = "email";
     public static final String ERROR_UPDATING_PATIENT = "Error al actualizar el %s con %s";
@@ -47,5 +45,11 @@ public final class Constants {
     public static final String ERROR_GET_PHOTO = "Error al obtener la foto del paciente con email %s";
     public static final String ERROR_SAVE_PHOTO = "Error al guardar la foto del paciente con email %s";
     public static final String PATIENT = "paciente";
+    public static final String SUCCESS = "Success";
+    public static final String NOT_FOUND = "NOT_FOUND";
+    public static final String EMAIL_VERIFIED = "email_verified";
+    public static final String TRUE = "true";
+    public static final String EMPTY = "";
+    public static final String MSG_PATIENT_ALREADY_EXISTS = "Existe paciente con %s ";
 }
 

@@ -2,11 +2,13 @@ package com.colombia.eps.patient.infrastructure.output.cognito.adapter;
 
 import com.colombia.eps.patient.domain.model.Patient;
 import com.colombia.eps.patient.domain.spi.ICognitoPersistencePort;
-import com.colombia.eps.patient.infrastructure.exception.FailProcessForCreateUserInUserPoolException;
-import com.colombia.eps.patient.infrastructure.exception.NotAddUserToGroupException;
-import com.colombia.eps.patient.infrastructure.exception.NotCreateUserInUserPoolException;
+import com.colombia.eps.patient.infrastructure.exception.CreatePatientInUserPoolException;
+import com.colombia.eps.patient.infrastructure.exception.AddUserToGroupException;
+import com.colombia.eps.patient.infrastructure.exception.CreateUserInUserPoolException;
+import com.colombia.eps.patient.infrastructure.helper.ExceptionMessage;
+import com.colombia.eps.patient.infrastructure.helper.StackTraceAnalyzer;
 import com.colombia.eps.patient.infrastructure.output.cognito.config.CognitoManager;
-import com.colombia.eps.patient.infrastructure.util.Constants;
+import com.colombia.eps.patient.infrastructure.helper.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
@@ -15,6 +17,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreate
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,7 @@ import java.util.List;
 public class CognitoAdapter implements ICognitoPersistencePort {
 
     /**
+     * develop a process for create a patient that consists in create a user in user pool and add this user a patient group
      * @param patient data of patient to create
      */
     @Override
@@ -35,36 +39,72 @@ public class CognitoAdapter implements ICognitoPersistencePort {
             if (createUser != null) {
                 addUserToGroup(cognitoManager.getCognitoClient(), userPoolId, email, patient.getFirstName(), patient.getFirstSurName());
             }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new FailProcessForCreateUserInUserPoolException(Constants.MSG_FAIL_PROCESS_FOR_CREATE_USER);
+        } catch (CreateUserInUserPoolException | AddUserToGroupException exception){
+            throw exception;
+        } catch (Exception exception) {
+            log.error(ExceptionMessage.builder()
+                    .message(exception.getMessage())
+                    .type(exception.getClass().getName())
+                    .hour(LocalDateTime.now().toString())
+                    .line(StackTraceAnalyzer.getErrorInfo(exception, CognitoAdapter.class.getPackageName()))
+                    .build()
+                    .toString());
+            throw new CreatePatientInUserPoolException();
         }
     }
 
+    /**
+     * create a new user in user pool
+     * @param cognitoClient client of cognito
+     * @param userPoolId id of user pool
+     * @param email email of user
+     * @param password password of user
+     * @return response of create user
+     */
     private AdminCreateUserResponse createNewUser(CognitoIdentityProviderClient cognitoClient, String userPoolId, String email, String password) {
         try {
             List<AttributeType> userAttributes = new ArrayList<>();
-            userAttributes.add(AttributeType.builder().name("email").value(email).build());
-            userAttributes.add(AttributeType.builder().name("email_verified").value("true").build());
+            userAttributes.add(AttributeType.builder().name(Constants.EMAIL).value(email).build());
+            userAttributes.add(AttributeType.builder().name(Constants.EMAIL_VERIFIED).value(Constants.TRUE).build());
 
             AdminCreateUserRequest userRequest = AdminCreateUserRequest.builder().userPoolId(userPoolId).username(email).temporaryPassword(password).userAttributes(userAttributes).messageAction("SUPPRESS").build();
 
             return cognitoClient.adminCreateUser(userRequest);
         } catch (Exception exception) {
-            log.error(exception.getMessage());
-            throw new NotCreateUserInUserPoolException(String.format(Constants.MSG_NOT_CREATE_USER_IN_USER_POOL, email));
+            log.error(ExceptionMessage.builder()
+                    .message(exception.getMessage())
+                    .type(exception.getClass().getName())
+                    .hour(LocalDateTime.now().toString())
+                    .line(StackTraceAnalyzer.getErrorInfo(exception, CognitoAdapter.class.getPackageName()))
+                    .build()
+                    .toString());
+            throw new CreateUserInUserPoolException(String.format(Constants.MSG_NOT_CREATE_USER_IN_USER_POOL, email));
         }
     }
 
+    /**
+     * add a user to group
+     * @param cognitoClient client of cognito
+     * @param userPoolId id of user pool
+     * @param username username of user
+     * @param name name of user
+     * @param surname surname of user
+     */
     private void addUserToGroup(CognitoIdentityProviderClient cognitoClient, String userPoolId, String username, String name, String surname) {
         try {
             String groupName = System.getenv(Constants.PATIENT_GROUP);
             AdminAddUserToGroupRequest addUserToGroupRequest = AdminAddUserToGroupRequest.builder().userPoolId(userPoolId).username(username).groupName(groupName).build();
 
             cognitoClient.adminAddUserToGroup(addUserToGroupRequest);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new NotAddUserToGroupException(String.format(Constants.MSG_NOT_ADD_PATIENT_TO_PATIENT_GROUP, name, surname));
+        } catch (Exception exception) {
+            log.error(ExceptionMessage.builder()
+                    .message(exception.getMessage())
+                    .type(exception.getClass().getName())
+                    .hour(LocalDateTime.now().toString())
+                    .line(StackTraceAnalyzer.getErrorInfo(exception, CognitoAdapter.class.getPackageName()))
+                    .build()
+                    .toString());
+            throw new AddUserToGroupException(String.format(Constants.MSG_NOT_ADD_PATIENT_TO_PATIENT_GROUP, name, surname));
         }
     }
 

@@ -16,10 +16,8 @@ import com.colombia.eps.patient.infrastructure.output.dynamo.mapper.IPatientEnti
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.IPatientRepository;
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.PatientRepository;
 import com.colombia.eps.patient.infrastructure.output.ses.adapter.SesAdapter;
-import com.colombia.eps.patient.infrastructure.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

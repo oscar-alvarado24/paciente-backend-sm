@@ -22,7 +22,7 @@ public class PatientUseCase implements IPatientServicePort {
      */
     @Override
     public String createPatient(Patient patient) {
-        sesPersistencePort.verifyEmailAddress(patient.getEmail());
+        sesPersistencePort.createSesIdentity(patient.getEmail());
         cognitoPersistencePort.createPatientInUserPool(patient);
         return patientPersistencePort.createPatient(patient);
     }
@@ -37,31 +37,13 @@ public class PatientUseCase implements IPatientServicePort {
     }
 
     /**
-     * @param email email´s patient to validate
-     * @return string
-     */
-    @Override
-    public String validateStatus(String email) {
-        return patientPersistencePort.validatePatient(email);
-    }
-
-    /**
-     * @param id of  patient to change status
+     * @param id of patient to change status
      * @param status to change
      * @return confirmation message
      */
     @Override
     public String changeStatus(int id, String status) {
         return patientPersistencePort.changeStatus(id, status);
-    }
-
-    /**
-     * @param email of patient to get photo
-     * @return photo in base64
-     */
-    @Override
-    public String getPhoto(String email) {
-        return patientPersistencePort.getPhoto(email);
     }
 
     /**
@@ -77,10 +59,19 @@ public class PatientUseCase implements IPatientServicePort {
     /**
      * @param id of patient to update
      * @param patient with new data
-     * @return confirmation message of successfully process
+     * @return confirmation message of a successful process
      */
     @Override
     public String updatePatient(int id, Patient patient) {
         return patientPersistencePort.updatePatient(id, patient);
+    }
+
+    /**
+     * @param email to validate status ses registration
+     * @return message with status ses registration
+     */
+    @Override
+    public String validateStatusSesRegistration(String email) {
+        return sesPersistencePort.validateStatusSesRegistration(email);
     }
 }

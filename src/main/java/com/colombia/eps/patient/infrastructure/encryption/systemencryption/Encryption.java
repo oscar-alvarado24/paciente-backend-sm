@@ -1,6 +1,6 @@
 package com.colombia.eps.patient.infrastructure.encryption.systemencryption;
 
-import com.colombia.eps.patient.infrastructure.util.Constants;
+import com.colombia.eps.patient.infrastructure.helper.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

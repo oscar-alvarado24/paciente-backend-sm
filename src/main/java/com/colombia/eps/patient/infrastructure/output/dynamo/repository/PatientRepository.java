@@ -1,7 +1,7 @@
 package com.colombia.eps.patient.infrastructure.output.dynamo.repository;
 
 import com.colombia.eps.patient.infrastructure.output.dynamo.entity.PatientEntity;
-import com.colombia.eps.patient.infrastructure.util.Constants;
+import com.colombia.eps.patient.infrastructure.helper.Constants;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;

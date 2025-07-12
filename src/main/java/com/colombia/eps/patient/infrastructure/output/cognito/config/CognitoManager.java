@@ -1,7 +1,7 @@
 package com.colombia.eps.patient.infrastructure.output.cognito.config;
 
 
-import com.colombia.eps.patient.infrastructure.util.Constants;
+import com.colombia.eps.patient.infrastructure.helper.Constants;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;

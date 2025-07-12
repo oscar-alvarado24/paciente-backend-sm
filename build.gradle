@@ -78,24 +78,21 @@ dependencies {
 	//sts
 	implementation 'software.amazon.awssdk:sts'
 	//ses
+	implementation 'software.amazon.awssdk:ses'
 	implementation 'software.amazon.awssdk:sesv2'
 	implementation 'software.amazon.awssdk:sdk-core'
-
-
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	//mapstruct
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-
+	// Binding for compatibility
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	//graphql
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation 'org.springframework.graphql:spring-graphql'
 	implementation 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.1.0'
-
-
-
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

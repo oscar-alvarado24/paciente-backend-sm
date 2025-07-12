@@ -18,20 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class PatientController {
 
-
     @QueryMapping
     public PatientResponse getPatient (@Argument String email){
         return patientHandler.getPatient(email);
     }
 
     @QueryMapping
-    public String validateStatus(@Argument String email) {
-        return patientHandler.validateStatus(email);
-    }
-
-    @QueryMapping
-    public String getPhoto(@Argument String email) {
-        return patientHandler.getPhoto(email);
+    public String validateStatusSesRegistration(@Argument String email) {
+        return patientHandler.validateStatusSesRegistration(email);
     }
 
     private final IPatientHandler patientHandler;
@@ -47,13 +41,12 @@ public class PatientController {
 
     @MutationMapping
     public String savePhoto (@Argument String email, @Argument String photo){
-        log.info("email: {}", email);
         return patientHandler.savePhoto(email, photo);
     }
 
     @MutationMapping
     public String updatePatient (@Arguments PatientRequest patient){
-        int id = patient.getId();
+        int id = patient.id();
         return patientHandler.updatePatient(id, patient);
     }
 }
