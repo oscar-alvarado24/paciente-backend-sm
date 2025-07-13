@@ -20,6 +20,8 @@ import com.colombia.eps.patient.infrastructure.output.dynamo.repository.IPatient
 import com.colombia.eps.patient.infrastructure.helper.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,13 +32,15 @@ import java.util.concurrent.CompletableFuture;
 public class PatientDynamoAdapter implements IPatientPersistencePort {
     private final IPatientRepository patientRepository;
     private final IPatientEntityMapper patientMapper;
+    private final DynamoDbClient dynamoDbClient;
+    private final DynamoDbEnhancedClient enhancedClient;
 
     /**
      * @param patient to save
      */
     @Override
     public String createPatient(Patient patient) {
-        try (DynamoDbManager manager = new DynamoDbManager()) {
+        try (DynamoDbManager manager = new DynamoDbManager(dynamoDbClient,enhancedClient)) {
             PatientEntity patientEntity = patientMapper.toPatientEntity(patient);
             patientEntity.setStatus(Status.ACTIVE);
             patientEntity.setPhoto("");
@@ -92,7 +96,7 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
      */
     @Override
     public Patient getPatient(String email) {
-        try (DynamoDbManager manager = new DynamoDbManager()) {
+        try (DynamoDbManager manager = new DynamoDbManager(dynamoDbClient,enhancedClient)) {
             PatientEntity patientEntity = patientRepository.findPatientByEmail(email, manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND,Constants.EMAIL, email)));
             return patientMapper.toPatient(patientEntity);
         } catch (PatientNotFoundException exception){
@@ -117,7 +121,7 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
      */
     @Override
     public String changeStatus(int id, String status) {
-        try (DynamoDbManager manager = new DynamoDbManager()) {
+        try (DynamoDbManager manager = new DynamoDbManager(dynamoDbClient,enhancedClient)) {
             PatientEntity  patient = patientRepository.findPatientById(String.valueOf(id), manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND, Constants.ID, id)));
             patient.setStatus(Status.valueOf(status));
             return patientRepository.updatePatient(patient, manager.createTable(Constants.TABLE_PATIENT_NAME));
@@ -140,7 +144,7 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
      */
     @Override
     public String savePhoto(String email, String photo) {
-        try (DynamoDbManager manager = new DynamoDbManager()) {
+        try (DynamoDbManager manager = new DynamoDbManager(dynamoDbClient,enhancedClient)) {
             PatientEntity patient = patientRepository.findPatientByEmail(email, manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND, Constants.EMAIL, email)));
             patient.setPhoto(photo);
             return patientRepository.updatePatient(patient, manager.createTable(Constants.TABLE_PATIENT_NAME));
@@ -165,7 +169,7 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
      */
     @Override
     public String updatePatient(int id, Patient patient) {
-        try (DynamoDbManager manager = new DynamoDbManager()) {
+        try (DynamoDbManager manager = new DynamoDbManager(dynamoDbClient,enhancedClient)) {
             PatientEntity patientEntity = patientRepository.findPatientById(String.valueOf(id), manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND, Constants.ID, id)));
             PatientEntity patientUpdated = patientMapper.toPatientEntity(patient);
             patientUpdated.setPhoto(patient.getPhoto() != null || Constants.EMPTY.equals(patient.getPhoto())  ? patient.getPhoto() : patientEntity.getPhoto() );

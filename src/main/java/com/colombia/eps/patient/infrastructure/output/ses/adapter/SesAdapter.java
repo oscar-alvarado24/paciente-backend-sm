@@ -8,7 +8,6 @@ import com.colombia.eps.patient.infrastructure.exception.ValidateStatusSesRegist
 import com.colombia.eps.patient.infrastructure.helper.Constants;
 import com.colombia.eps.patient.infrastructure.helper.ExceptionMessage;
 import com.colombia.eps.patient.infrastructure.helper.StackTraceAnalyzer;
-import com.colombia.eps.patient.infrastructure.output.ses.config.SesManager;
 import com.colombia.eps.patient.infrastructure.output.ses.helper.SesStatus;
 import com.colombia.eps.patient.infrastructure.output.ses.helper.StatusLog;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import software.amazon.awssdk.services.ses.model.GetIdentityVerificationAttribut
 import software.amazon.awssdk.services.ses.model.GetIdentityVerificationAttributesResponse;
 import software.amazon.awssdk.services.ses.model.IdentityVerificationAttributes;
 import software.amazon.awssdk.services.ses.model.VerifyEmailIdentityRequest;
+import software.amazon.awssdk.services.sesv2.SesV2Client;
 import software.amazon.awssdk.services.sesv2.model.CreateEmailIdentityRequest;
 
 import java.time.LocalDateTime;
@@ -26,14 +26,16 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Slf4j
 public class SesAdapter implements ISesPersistencePort {
+    private final SesClient sesClient;
+    private final SesV2Client sesV2Client;
     /**
      * @param emailAddress of patient to verify
      */
     @Override
     public void createSesIdentity(String emailAddress) {
-        try (SesManager sesManager = new SesManager()) {
-            createIdentity(emailAddress, sesManager);
-            log.info("Verification initiated for: {}", emailAddress);
+        try {
+            createIdentity(emailAddress);
+            log.debug("Verification initiated for: {}", emailAddress);
         } catch (Exception exception) {
             log.error(ExceptionMessage.builder()
                     .message(exception.getMessage())
@@ -50,15 +52,15 @@ public class SesAdapter implements ISesPersistencePort {
      * @param emailAddress of patient to validate status
      */
     public String validateStatusSesRegistration(String emailAddress) {
-        try (SesManager sesManager = new SesManager()) {
-            String status = getVerificationStatus(emailAddress, sesManager.getSesV1Client());
+        try {
+            String status = getVerificationStatus(emailAddress);
             String response;
             if (Constants.SUCCESS.equals(status)) {
                 log.debug(StatusLog.SUCCESS.format( emailAddress));
                 response= SesStatus.SUCCESS.getSentence();
             } else {
                 log.debug(StatusLog.NOT_SUCCESS.format(emailAddress));
-                sendEmailVerification(emailAddress, sesManager.getSesV1Client());
+                sendEmailVerification(emailAddress);
                 response= SesStatus.NOT_SUCCESS.getSentence();
             }
             return response;
@@ -80,13 +82,12 @@ public class SesAdapter implements ISesPersistencePort {
      * Create an identity for an email address.
      *
      * @param email       The email address to create an identity for.
-     * @param sesManager  The SesManager instance to use for creating the identity.
      */
-    private void createIdentity(String email, SesManager sesManager){
+    private void createIdentity(String email){
         CreateEmailIdentityRequest request = CreateEmailIdentityRequest.builder()
                 .emailIdentity(email)
                 .build();
-        sesManager.getSesV2Client().createEmailIdentity(request);
+        this.sesV2Client.createEmailIdentity(request);
     }
 
     /**
@@ -95,7 +96,7 @@ public class SesAdapter implements ISesPersistencePort {
      * @param emailAddress The email address to verify.
      * @return verification status of an email address
      */
-    private String getVerificationStatus(String emailAddress, SesClient sesClient) {
+    private String getVerificationStatus(String emailAddress) {
         try {
             GetIdentityVerificationAttributesRequest request =
                     GetIdentityVerificationAttributesRequest.builder()
@@ -103,7 +104,7 @@ public class SesAdapter implements ISesPersistencePort {
                             .build();
 
             GetIdentityVerificationAttributesResponse response =
-                    sesClient.getIdentityVerificationAttributes(request);
+                    this.sesClient.getIdentityVerificationAttributes(request);
 
             IdentityVerificationAttributes attributes =
                     response.verificationAttributes().get(emailAddress);
@@ -128,13 +129,13 @@ public class SesAdapter implements ISesPersistencePort {
         }
     }
 
-    public void sendEmailVerification(String emailAddress, SesClient sesClient) {
+    public void sendEmailVerification(String emailAddress) {
         try {
             VerifyEmailIdentityRequest request = VerifyEmailIdentityRequest.builder()
                     .emailAddress(emailAddress)
                     .build();
 
-            sesClient.verifyEmailIdentity(request);
+            this.sesClient.verifyEmailIdentity(request);
         } catch (Exception exception) {
             log.error(ExceptionMessage.builder()
                     .message(exception.getMessage())

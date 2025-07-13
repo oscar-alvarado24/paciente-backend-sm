@@ -7,7 +7,6 @@ import com.colombia.eps.patient.infrastructure.exception.AddUserToGroupException
 import com.colombia.eps.patient.infrastructure.exception.CreateUserInUserPoolException;
 import com.colombia.eps.patient.infrastructure.helper.ExceptionMessage;
 import com.colombia.eps.patient.infrastructure.helper.StackTraceAnalyzer;
-import com.colombia.eps.patient.infrastructure.output.cognito.config.CognitoManager;
 import com.colombia.eps.patient.infrastructure.helper.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CognitoAdapter implements ICognitoPersistencePort {
+    private final CognitoIdentityProviderClient cognitoClient;
 
     /**
      * develop a process for create a patient that consists in create a user in user pool and add this user a patient group
@@ -31,13 +31,13 @@ public class CognitoAdapter implements ICognitoPersistencePort {
      */
     @Override
     public void createPatientInUserPool(Patient patient) {
-        try (CognitoManager cognitoManager = new CognitoManager()) {
+        try {
             String userPoolId = System.getenv(Constants.VE_USER_POOL_ID);
             String email = patient.getEmail();
             String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + patient.getId() % 10000 + Constants.ASTERISK;
-            AdminCreateUserResponse createUser = createNewUser(cognitoManager.getCognitoClient(), userPoolId, email, password);
+            AdminCreateUserResponse createUser = createNewUser(this.cognitoClient, userPoolId, email, password);
             if (createUser != null) {
-                addUserToGroup(cognitoManager.getCognitoClient(), userPoolId, email, patient.getFirstName(), patient.getFirstSurName());
+                addUserToGroup(this.cognitoClient, userPoolId, email, patient.getFirstName(), patient.getFirstSurName());
             }
         } catch (CreateUserInUserPoolException | AddUserToGroupException exception){
             throw exception;
