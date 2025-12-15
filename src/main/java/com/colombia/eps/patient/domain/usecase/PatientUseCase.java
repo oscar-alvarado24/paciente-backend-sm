@@ -22,8 +22,9 @@ public class PatientUseCase implements IPatientServicePort {
      */
     @Override
     public String createPatient(Patient patient) {
-        sesPersistencePort.createSesIdentity(patient.getEmail());
-        cognitoPersistencePort.createPatientInUserPool(patient);
+        //sesPersistencePort.createSesIdentity(patient.getEmail());
+        //cognitoPersistencePort.createPatientInUserPool(patient);
+        //return "proceso ejecutado exitosamente";
         return patientPersistencePort.createPatient(patient);
     }
 

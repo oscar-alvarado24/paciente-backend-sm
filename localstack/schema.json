@@ -1,0 +1,8 @@
+[
+  {
+    "Name": "email",
+    "AttributeDataType": "String",
+    "Required": true,
+    "Mutable": true
+  }
+]
