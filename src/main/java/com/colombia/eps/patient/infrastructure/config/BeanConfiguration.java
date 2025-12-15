@@ -33,6 +33,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
+import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 
 import java.net.URI;
 
@@ -46,6 +47,7 @@ public class BeanConfiguration {
             AwsBasicCredentials.create("test", "test"));
     private final URI uri = URI.create("http://localhost:4566");
     @Value("${aws.region}") String regionName;
+    @Value("${aws.session.name}") String sessionName;
 
 
     @Bean
@@ -79,12 +81,11 @@ public class BeanConfiguration {
             @Value("${aws.region}") String region,
             @Value("${aws.dynamodb.access-key}") String accessKey,
             @Value("${aws.dynamodb.secret-key}") String secretKey,
-            @Value("${aws.dynamodb.role}") String role,
-            @Value("${aws.dynamodb.session-name}") String sessionName) {
+            @Value("${aws.dynamodb.role}") String role) {
 
         log.info("Configuring DynamoDB for development environment in region: {}", region);
 
-        AwsCredentialsProvider credential = createCredential(accessKey, secretKey, role, sessionName, Region.of(regionName));
+        StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
 
         return DynamoDbClient.builder()
                 .region(Region.of(regionName))
@@ -131,14 +132,13 @@ public class BeanConfiguration {
     @Profile("!local")
     public CognitoIdentityProviderClient cloudCognitoClient(@Value("${aws.cognito.role}") String role,
                                                             @Value("${aws.cognito.access-key}") String accessKey,
-                                                            @Value("${aws.cognito.secret-key}") String secretKey,
-                                                            @Value("${aws.cognito.session-name}") String sessionName){
-        AwsCredentialsProvider credential = createCredential(accessKey, secretKey, role, sessionName, Region.of(regionName));
+                                                            @Value("${aws.cognito.secret-key}") String secretKey){
+        StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
         return CognitoIdentityProviderClient.builder().region(Region.of(regionName)).credentialsProvider(credential).build();
     }
 
     @Bean
-    public IPatientPersistencePort patientPersistencePort(PatientRepository patientRepository, IPatientEntityMapper patientMapper,DynamoDbClient dynamoDbClient, DynamoDbEnhancedClient dynamoDbEnhancedClient){
+    public IPatientPersistencePort patientPersistencePort(IPatientRepository patientRepository, IPatientEntityMapper patientMapper,DynamoDbClient dynamoDbClient, DynamoDbEnhancedClient dynamoDbEnhancedClient){
         return new PatientDynamoAdapter(patientRepository, patientMapper,dynamoDbClient,dynamoDbEnhancedClient);
     }
 
@@ -153,8 +153,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public IPatientEncryptionServicePort patientEncryptionServicePort(Encryption encryption){
-        return new PatientEncryptionUseCase(patientEncryptionPersistencePort(encryption));
+    public IPatientEncryptionServicePort patientEncryptionServicePort(IPatientEncryptionPersistencePort patientEncryptionPersistencePort){
+        return new PatientEncryptionUseCase(patientEncryptionPersistencePort);
     }
 
     @Bean
@@ -176,9 +176,8 @@ public class BeanConfiguration {
     @Profile("!local")
     public SesV2Client cloudSesV2Client(@Value("${aws.ses.role}") String role,
                                         @Value("${aws.ses.access-key}") String accessKey,
-                                        @Value("${aws.ses.secret-key}") String secretKey,
-                                        @Value("${aws.ses.session-name}") String sessionName) {
-        AwsCredentialsProvider credential = createCredential(accessKey, secretKey, role, sessionName, Region.of(regionName));
+                                        @Value("${aws.ses.secret-key}") String secretKey) {
+        StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
         return SesV2Client.builder()
                 .region(Region.of(regionName))
                 .credentialsProvider(credential)
@@ -199,9 +198,8 @@ public class BeanConfiguration {
     @Profile("!local")
     public SesClient cloudSesClient(@Value("${aws.ses.role}") String role,
                                         @Value("${aws.ses.access-key}") String accessKey,
-                                        @Value("${aws.ses.secret-key}") String secretKey,
-                                        @Value("${aws.ses.session-name}") String sessionName) {
-        AwsCredentialsProvider credential = createCredential(accessKey, secretKey, role, sessionName, Region.of(regionName));
+                                        @Value("${aws.ses.secret-key}") String secretKey) {
+        StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
         return SesClient.builder()
                 .region(Region.of(regionName))
                 .credentialsProvider(credential)

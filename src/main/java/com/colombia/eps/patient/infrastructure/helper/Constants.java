@@ -3,8 +3,6 @@ package com.colombia.eps.patient.infrastructure.helper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Locale;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Constants {
 
