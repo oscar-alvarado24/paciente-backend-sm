@@ -9,7 +9,7 @@ public enum PatientExist {
     EMAIL (" email %s"),
     ID (" id %s"),
     BOTH(" email %s y id %s"),
-    NO_EXIST("No existe un paciente con email %s ni id %");
+    NO_EXIST("No existe un paciente con email %s ni id %s");
     private final String message;
 
     public String format(Object... arg) {

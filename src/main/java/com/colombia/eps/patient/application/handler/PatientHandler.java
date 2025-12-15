@@ -2,12 +2,15 @@ package com.colombia.eps.patient.application.handler;
 
 import com.colombia.eps.patient.application.dto.PatientRequest;
 import com.colombia.eps.patient.application.dto.PatientResponse;
+import com.colombia.eps.patient.application.helper.CryptoUtil;
 import com.colombia.eps.patient.application.mapper.IPatientMapper;
 import com.colombia.eps.patient.domain.api.IPatientServicePort;
 import com.colombia.eps.patient.domain.model.Patient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PatientHandler implements IPatientHandler{
@@ -30,6 +33,7 @@ public class PatientHandler implements IPatientHandler{
     @Override
     public PatientResponse getPatient(String email) {
         Patient patient = patientServicePort.getPatient(email);
+        log.info("El paciente encontrado es  {}", patient.toString());
         return patientMapper.toRequestResponse(patient);
     }
 
@@ -69,7 +73,8 @@ public class PatientHandler implements IPatientHandler{
      */
     @Override
     public String validateStatusSesRegistration(String email) {
-        return patientServicePort.validateStatusSesRegistration(email);
+        String emailDecrypted = CryptoUtil.decrypt(email);
+        return patientServicePort.validateStatusSesRegistration(emailDecrypted);
     }
 
 }

@@ -120,4 +120,23 @@ public class Patient {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", firstSurName='" + firstSurName + '\'' +
+                ", secondSurName='" + secondSurName + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", cellPhone='" + cellPhone + '\'' +
+                ", residencesType='" + residencesType + '\'' +
+                ", descriptionResidence='" + descriptionResidence + '\'' +
+                ", neighborhood='" + neighborhood + '\'' +
+                ", photo='" + photo + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

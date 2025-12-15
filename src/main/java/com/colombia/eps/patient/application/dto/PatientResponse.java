@@ -1,7 +1,7 @@
 package com.colombia.eps.patient.application.dto;
 
 public record PatientResponse (
-    int id,
+    String id,
     String firstName,
     String secondName,
     String firstSurName,
