@@ -31,7 +31,6 @@ jacocoTestReport {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: 'com/colombia/eps/patient/infrastructure/config/**')
 			fileTree(dir: it, exclude: 'com/colombia/eps/patient/application/**')
-			fileTree(dir: it, exclude: 'com/colombia/eps/patient/domain/model/**')
 			fileTree(dir: it, exclude: 'com/colombia/eps/patient/PatientApplication.class')
 		}))
 	}
@@ -97,6 +96,8 @@ dependencies {
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation "org.testcontainers:localstack:1.18.0"
+	testImplementation "org.testcontainers:junit-jupiter:1.18.0"
 }
 
 tasks.named('test') {
