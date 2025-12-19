@@ -12,6 +12,7 @@ type RequestResponse{
     neighborhood: String
     photo: String
     status: String
+    program: String
 }
 
 type Mutation {
@@ -27,7 +28,8 @@ type Mutation {
         cellPhone: String!
         residencesType: String!
         descriptionResidence: String
-        neighborhood: String!):String
+        neighborhood: String!
+        program: String!):String
     changeStatus (
         id: Int!
         status: String!):String

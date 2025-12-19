@@ -13,5 +13,7 @@ public record PatientResponse (
     String descriptionResidence,
     String neighborhood,
     String photo,
-    String status)
+    String status,
+    String program
+)
 {}

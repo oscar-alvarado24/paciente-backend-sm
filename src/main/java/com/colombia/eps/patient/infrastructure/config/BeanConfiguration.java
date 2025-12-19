@@ -6,6 +6,7 @@ import com.colombia.eps.patient.domain.spi.ICognitoPersistencePort;
 import com.colombia.eps.patient.domain.spi.IPatientEncryptionPersistencePort;
 import com.colombia.eps.patient.domain.spi.IPatientPersistencePort;
 import com.colombia.eps.patient.domain.spi.ISesPersistencePort;
+import com.colombia.eps.patient.domain.spi.ISqsPersistencePort;
 import com.colombia.eps.patient.domain.usecase.PatientEncryptionUseCase;
 import com.colombia.eps.patient.domain.usecase.PatientUseCase;
 import com.colombia.eps.patient.infrastructure.encryption.adapter.PatientEncryptionAdapter;
@@ -33,6 +34,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
+import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 
 import java.net.URI;
@@ -143,8 +145,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public IPatientServicePort patientServicePort(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort, ISesPersistencePort sesPersistencePort){
-        return new PatientUseCase(patientPersistencePort, cognitoPersistencePort, sesPersistencePort);
+    public IPatientServicePort patientServicePort(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort, ISesPersistencePort sesPersistencePort, ISqsPersistencePort sqsPersistencePort){
+        return new PatientUseCase(patientPersistencePort, cognitoPersistencePort, sesPersistencePort, sqsPersistencePort);
     }
 
     @Bean
@@ -201,6 +203,28 @@ public class BeanConfiguration {
                                         @Value("${aws.ses.secret-key}") String secretKey) {
         StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
         return SesClient.builder()
+                .region(Region.of(regionName))
+                .credentialsProvider(credential)
+                .build();
+    }
+
+    @Bean
+    @Profile("local")
+    public SqsClient localSqsClient(){
+        return SqsClient.builder()
+                .region(Region.of(regionName))
+                .credentialsProvider(this.localCredentials)
+                .endpointOverride(this.uri)
+                .build();
+    }
+
+    @Bean
+    @Profile("!local")
+    public SqsClient cloudSqsClient(@Value("${aws.sqs.role}") String role,
+                                    @Value("${aws.sqs.access-key}") String accessKey,
+                                    @Value("${aws.sqs.secret-key}") String secretKey) {
+        StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
+        return SqsClient.builder()
                 .region(Region.of(regionName))
                 .credentialsProvider(credential)
                 .build();

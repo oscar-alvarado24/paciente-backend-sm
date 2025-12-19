@@ -23,7 +23,10 @@ public class PatientHandler implements IPatientHandler{
     @Override
     public String createPatient(PatientRequest patientRequest) {
         Patient patient = patientMapper.toPatient(patientRequest);
-        return patientServicePort.createPatient(patient);
+        String name = CryptoUtil.encrypt(patient.getFirstName() + " " + patient.getFirstSurName());
+        String id = CryptoUtil.encrypt(String.valueOf(patient.getId()));
+        String email = CryptoUtil.encrypt(patient.getEmail());
+        return patientServicePort.createPatient(patient,email, name, id);
     }
 
     /**

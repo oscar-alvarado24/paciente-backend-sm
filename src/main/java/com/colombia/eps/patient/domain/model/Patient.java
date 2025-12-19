@@ -1,7 +1,7 @@
 package com.colombia.eps.patient.domain.model;
 
 public class Patient {
-    int id;
+    private int id;
     private String firstName;
     private String secondName;
     private String firstSurName;
@@ -14,8 +14,9 @@ public class Patient {
     private String neighborhood;
     private String photo;
     private String status;
+    private String program;
 
-    public Patient() {}
+    public Patient() { /*  constructor empty for mapper process*/ }
 
     public int getId() {
         return id;
@@ -121,6 +122,14 @@ public class Patient {
         this.status = status;
     }
 
+    public String getProgram() {
+        return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
     @Override
     public String toString() {
         return "Patient{" +
@@ -137,6 +146,7 @@ public class Patient {
                 ", neighborhood='" + neighborhood + '\'' +
                 ", photo='" + photo + '\'' +
                 ", status='" + status + '\'' +
+                ", program='" + program + '\'' +
                 '}';
     }
 }

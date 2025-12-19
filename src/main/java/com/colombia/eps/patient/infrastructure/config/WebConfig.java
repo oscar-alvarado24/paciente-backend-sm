@@ -75,7 +75,8 @@ public class WebConfig {
         config.setAllowedOriginPatterns(Arrays.asList(
                 "*.amazonaws.com",
                 "*.execute-api.*.amazonaws.com",
-                "https://*.amplifyapp.com"
+                "https://*.amplifyapp.com",
+                "chrome-extension://flnheeellpciglgpaodhkhmapeljopja"
         ));
 
         config.setAllowedMethods(Arrays.asList(

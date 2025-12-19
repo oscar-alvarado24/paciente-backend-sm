@@ -41,6 +41,7 @@ public interface IPatientMapper {
                 descriptionResidence,
                 CryptoUtil.encrypt(patient.getNeighborhood()),
                 photo,
-                status);
+                status,
+                patient.getProgram());
     }
 }

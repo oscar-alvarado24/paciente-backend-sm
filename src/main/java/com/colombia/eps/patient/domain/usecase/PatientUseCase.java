@@ -5,27 +5,30 @@ import com.colombia.eps.patient.domain.model.Patient;
 import com.colombia.eps.patient.domain.spi.ICognitoPersistencePort;
 import com.colombia.eps.patient.domain.spi.IPatientPersistencePort;
 import com.colombia.eps.patient.domain.spi.ISesPersistencePort;
+import com.colombia.eps.patient.domain.spi.ISqsPersistencePort;
 
 public class PatientUseCase implements IPatientServicePort {
     private final IPatientPersistencePort patientPersistencePort;
     private final ICognitoPersistencePort cognitoPersistencePort;
     private final ISesPersistencePort sesPersistencePort;
+    private final ISqsPersistencePort sqsPersistencePort;
 
-    public PatientUseCase(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort, ISesPersistencePort sesPersistencePort) {
+    public PatientUseCase(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort, ISesPersistencePort sesPersistencePort, ISqsPersistencePort sqsPersistencePort) {
         this.patientPersistencePort = patientPersistencePort;
         this.cognitoPersistencePort = cognitoPersistencePort;
         this.sesPersistencePort = sesPersistencePort;
+        this.sqsPersistencePort = sqsPersistencePort;
     }
 
     /**
      * @param patient to save
      */
     @Override
-    public String createPatient(Patient patient) {
-        //sesPersistencePort.createSesIdentity(patient.getEmail());
-        //cognitoPersistencePort.createPatientInUserPool(patient);
-        //return "proceso ejecutado exitosamente";
-        return patientPersistencePort.createPatient(patient);
+    public String createPatient(Patient patient, String email, String name, String identity) {
+        sesPersistencePort.createSesIdentity(patient.getEmail());
+        cognitoPersistencePort.createPatientInUserPool(patient);
+        patientPersistencePort.createPatient(patient);
+        return sqsPersistencePort.sendMessage(patient, email, name, identity);
     }
 
     /**

@@ -36,7 +36,10 @@ public record PatientRequest(
         String descriptionResidence,
 
         @NotBlank(message = "El campo barrio no puede estar vacio")
-        String neighborhood
+        String neighborhood,
+
+        @NotBlank(message = "El campo programa es obligatorio")
+        String program
 ) {}
 
 
