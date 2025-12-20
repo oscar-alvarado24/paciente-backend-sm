@@ -84,10 +84,10 @@ public class SesAdapter implements ISesPersistencePort {
      * @param email       The email address to create an identity for.
      */
     private void createIdentity(String email){
-        CreateEmailIdentityRequest request = CreateEmailIdentityRequest.builder()
-                .emailIdentity(email)
+        VerifyEmailIdentityRequest request = VerifyEmailIdentityRequest.builder()
+                .emailAddress(email)
                 .build();
-        this.sesV2Client.createEmailIdentity(request);
+        this.sesClient.verifyEmailIdentity(request);
     }
 
     /**

@@ -1,0 +1,181 @@
+package com.colombia.eps.patient.infrastructure.output;
+
+import com.colombia.eps.patient.domain.model.Patient;
+import com.colombia.eps.patient.infrastructure.helper.Constants;
+import com.colombia.eps.patient.infrastructure.output.cognito.adapter.CognitoAdapter;
+import com.colombia.eps.patient.infrastructure.output.dynamo.adapter.PatientDynamoAdapter;
+import com.colombia.eps.patient.infrastructure.output.dynamo.mapper.IPatientEntityMapper;
+import com.colombia.eps.patient.infrastructure.output.dynamo.repository.PatientRepository;
+import com.colombia.eps.patient.infrastructure.output.ses.adapter.SesAdapter;
+import com.colombia.eps.patient.infrastructure.output.sqs.adpter.SqsAdapter;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
+import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateGroupRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateUserPoolRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateUserPoolResponse;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
+import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
+import software.amazon.awssdk.services.dynamodb.model.GlobalSecondaryIndex;
+import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
+import software.amazon.awssdk.services.dynamodb.model.KeyType;
+import software.amazon.awssdk.services.dynamodb.model.Projection;
+import software.amazon.awssdk.services.dynamodb.model.ProjectionType;
+import software.amazon.awssdk.services.dynamodb.model.ProvisionedThroughput;
+import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
+import software.amazon.awssdk.services.ses.SesClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
+import software.amazon.awssdk.services.sqs.model.CreateQueueResponse;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.COGNITO_IDENTITY_PROVIDER;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.DYNAMODB;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SES;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SQS;
+
+@Testcontainers
+class AwsAdaptersIT {
+
+    @Container
+    static LocalStackContainer localStack = new LocalStackContainer(DockerImageName.parse("localstack/localstack:3.0.2"))
+            .withServices(DYNAMODB, COGNITO_IDENTITY_PROVIDER, SES, SQS)
+            .waitingFor(Wait.forLogMessage(".*Ready\\.\n", 1));
+
+    private static PatientDynamoAdapter patientDynamoAdapter;
+    private static CognitoAdapter cognitoAdapter;
+    private static SesAdapter sesAdapter;
+    private static SqsAdapter sqsAdapter;
+
+    @BeforeAll
+    static void setUp() {
+        // DynamoDB
+        DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
+                .endpointOverride(localStack.getEndpointOverride(DYNAMODB))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                .region(Region.of(localStack.getRegion()))
+                .build();
+
+        DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(dynamoDbClient)
+                .build();
+
+        CreateTableRequest createTableRequest = CreateTableRequest.builder()
+                .tableName("patient")
+                .keySchema(KeySchemaElement.builder().attributeName("id").keyType(KeyType.HASH).build())
+                .attributeDefinitions(
+                        AttributeDefinition.builder().attributeName("id").attributeType(ScalarAttributeType.S).build(),
+                        AttributeDefinition.builder().attributeName("email").attributeType(ScalarAttributeType.S).build()
+                )
+                .globalSecondaryIndexes(GlobalSecondaryIndex.builder()
+                        .indexName(Constants.EMAIL_INDEX)
+                        .keySchema(KeySchemaElement.builder().attributeName("email").keyType(KeyType.HASH).build())
+                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
+                        .provisionedThroughput(ProvisionedThroughput.builder().readCapacityUnits(10L).writeCapacityUnits(10L).build())
+                        .build())
+                .provisionedThroughput(ProvisionedThroughput.builder().readCapacityUnits(10L).writeCapacityUnits(10L).build())
+                .build();
+        dynamoDbClient.createTable(createTableRequest);
+
+        patientDynamoAdapter = new PatientDynamoAdapter(
+                new PatientRepository(),
+                Mappers.getMapper(IPatientEntityMapper.class),
+                dynamoDbClient,
+                enhancedClient
+        );
+
+        // Cognito
+        CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
+                .endpointOverride(localStack.getEndpointOverride(COGNITO_IDENTITY_PROVIDER))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                .region(Region.of(localStack.getRegion()))
+                .build();
+
+        CreateUserPoolResponse userPool = cognitoClient.createUserPool(CreateUserPoolRequest.builder().poolName("test-pool").build());
+        System.setProperty("USER_POOL_ID", userPool.userPool().id());
+
+        cognitoClient.createGroup(CreateGroupRequest.builder().groupName("patient").userPoolId(userPool.userPool().id()).build());
+        System.setProperty("PATIENT_GROUP", "patient");
+
+
+        cognitoAdapter = new CognitoAdapter(cognitoClient);
+
+        // SES
+        SesClient sesClient = SesClient.builder()
+                .endpointOverride(localStack.getEndpointOverride(SES))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                .region(Region.of(localStack.getRegion()))
+                .build();
+
+        sesAdapter = new SesAdapter(sesClient, null);
+
+        // SQS
+        SqsClient sqsClient = SqsClient.builder()
+                .endpointOverride(localStack.getEndpointOverride(SQS))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                .region(Region.of(localStack.getRegion()))
+                .build();
+
+        CreateQueueResponse queue = sqsClient.createQueue(CreateQueueRequest.builder().queueName("test-queue").build());
+
+        sqsAdapter = new SqsAdapter(sqsClient, queue.queueUrl());
+    }
+
+    @Test
+    void testDynamoDbAdapter() {
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setEmail("test@example.com");
+        patient.setFirstName("John");
+        patient.setFirstSurName("Doe");
+
+        patientDynamoAdapter.createPatient(patient);
+
+        Patient retrievedPatient = patientDynamoAdapter.getPatient("test@example.com");
+
+        assertNotNull(retrievedPatient);
+        assertEquals("John", retrievedPatient.getFirstName());
+    }
+
+    @Test
+    void testCognitoAdapter() {
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setEmail("test@example.com");
+        patient.setFirstName("John");
+        patient.setFirstSurName("Doe");
+
+        assertDoesNotThrow(() -> cognitoAdapter.createPatientInUserPool(patient));
+    }
+
+    @Test
+    void testSesAdapter() {
+        assertDoesNotThrow(() -> sesAdapter.createSesIdentity("test@example.com"));
+        String status = sesAdapter.validateStatusSesRegistration("test@example.com");
+        assertEquals("Email_verificado", status);
+    }
+
+    @Test
+    void testSqsAdapter() {
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setProgram("Test Program");
+        patient.setFirstName("John");
+        patient.setFirstSurName("Doe");
+
+        assertDoesNotThrow(() -> sqsAdapter.sendMessage(patient, "test@example.com", "John Doe", "123"));
+    }
+}

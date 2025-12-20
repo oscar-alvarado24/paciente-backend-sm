@@ -96,8 +96,9 @@ dependencies {
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation "org.testcontainers:localstack:1.18.0"
-	testImplementation "org.testcontainers:junit-jupiter:1.18.0"
+	testImplementation "org.testcontainers:localstack:1.19.0"
+	testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+	testImplementation 'org.springframework.graphql:spring-graphql-test'
 }
 
 tasks.named('test') {
