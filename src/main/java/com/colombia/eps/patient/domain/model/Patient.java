@@ -9,6 +9,7 @@ public class Patient {
     private String address;
     private String email;
     private String cellPhone;
+    private String landline;
     private String residencesType;
     private String descriptionResidence;
     private String neighborhood;
@@ -80,6 +81,14 @@ public class Patient {
 
     public void setCellPhone(String cellPhone) {
         this.cellPhone = cellPhone;
+    }
+
+    public String getLandline() {
+        return landline;
+    }
+
+    public void setLandline(String landline) {
+        this.landline = landline;
     }
 
     public String getResidencesType() {

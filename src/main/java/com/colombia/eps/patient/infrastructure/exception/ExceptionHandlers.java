@@ -24,11 +24,30 @@ public class ExceptionHandlers extends DataFetcherExceptionResolverAdapter {
             case PATIENT_NOT_FOUND ->
                     graphQLError = graphQLError(ErrorType.NOT_FOUND, ex.getMessage(), env, exceptionName.name());
 
-            case PATIENT_ALREADY_EXISTS ->
+            case PATIENT_ALREADY_EXIST ->
                 graphQLError = graphQLError(ErrorType.BAD_REQUEST, ex.getMessage(), env, exceptionName.name());
 
-            default -> graphQLError = GraphqlErrorBuilder.newError().build();
+            case CREATE_SES_IDENTITY ->
+                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.CREATE_SES_IDENTITY.getMessage(), env, exceptionName.name());
 
+            case IDENTITY_NOT_FOUND ->
+                graphQLError = graphQLError(ErrorType.FORBIDDEN, ExceptionResponse.IDENTITY_NOT_FOUND.getMessage(), env, exceptionName.name());
+
+            case GET_VERIFICATION_STATUS_IN_SES ->
+                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.GET_VERIFICATION_STATUS_IN_SES.getMessage(), env, exceptionName.name());
+
+            case GET_PATIENT ->
+                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.GET_PATIENT.getMessage(), env, exceptionName.name());
+
+            case CHANGE_PATIENT_STATUS, UPDATE_PATIENT, CREATE_USER_IN_USER_POOL, ADD_USER_TO_GROUP ->
+                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ex.getMessage(), env, exceptionName.name());
+
+            case SAVE_PHOTO_TO_PATIENT ->
+                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.SAVE_PHOTO_TO_PATIENT.getMessage(), env, exceptionName.name());
+
+            case CREATE_PATIENT_IN_USER_POOL ->
+                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.CREATE_PATIENT_IN_USER_POOL.getMessage(), env, exceptionName.name());
+            default -> graphQLError = GraphqlErrorBuilder.newError().build();
         }
         return graphQLError;
     }

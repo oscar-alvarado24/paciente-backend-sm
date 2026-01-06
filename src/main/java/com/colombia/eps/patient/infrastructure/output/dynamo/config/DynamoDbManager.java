@@ -1,6 +1,5 @@
 package com.colombia.eps.patient.infrastructure.output.dynamo.config;
 
-import com.colombia.eps.patient.infrastructure.exception.DynamoDbManagerException;
 import com.colombia.eps.patient.infrastructure.output.dynamo.entity.PatientEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

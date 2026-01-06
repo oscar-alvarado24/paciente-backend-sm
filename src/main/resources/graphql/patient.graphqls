@@ -48,7 +48,8 @@ type Mutation {
         cellPhone: String!
         residencesType: String!
         descriptionResidence: String
-        neighborhood: String!):String
+        neighborhood: String!
+        program: String!):String
 }
 
 type Query{

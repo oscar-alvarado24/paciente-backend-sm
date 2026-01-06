@@ -1,10 +1,10 @@
 package com.colombia.eps.patient.infrastructure.helper;
 
-public class StackTraceAnalyzer {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    /**
-     * Obtiene información detallada del error desde una excepción
-     */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class StackTraceAnalyzer {
     public static String getErrorInfo(Exception e, String packagePrefix) {
         if (e == null) return null;
 

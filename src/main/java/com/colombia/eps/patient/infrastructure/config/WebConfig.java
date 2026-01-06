@@ -11,10 +11,7 @@ import java.util.Arrays;
 
 @Configuration
 public class WebConfig {
-    /**
-     * Configuración CORS para ambiente local (desarrollo)
-     * Permite peticiones desde localhost:4200 y extensiones de Chrome
-     */
+    private static final String AUTHORIZATION = "Authorization";
     @Bean
     @Profile("local")
     public CorsFilter corsFilterLocal() {
@@ -38,7 +35,7 @@ public class WebConfig {
                 "Origin",
                 "Content-Type",
                 "Accept",
-                "Authorization",
+                AUTHORIZATION,
                 "X-Patient-Service",
                 "X-User-Service",
                 "X-Order-Service",
@@ -48,7 +45,7 @@ public class WebConfig {
         ));
 
         config.setExposedHeaders(Arrays.asList(
-                "Authorization",
+                AUTHORIZATION,
                 "Content-Disposition"
         ));
 
@@ -89,7 +86,7 @@ public class WebConfig {
                 "Origin",
                 "Content-Type",
                 "Accept",
-                "Authorization",
+                AUTHORIZATION,
                 "X-Patient-Service",
                 "x-patient-service",
                 "Access-Control-Request-Method",

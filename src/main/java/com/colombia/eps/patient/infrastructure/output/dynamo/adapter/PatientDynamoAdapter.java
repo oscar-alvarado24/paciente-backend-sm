@@ -127,7 +127,9 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
             PatientEntity  patient = patientRepository.findPatientById(String.valueOf(id), manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND, Constants.ID, id)));
             patient.setStatus(Status.valueOf(status));
             return patientRepository.updatePatient(patient, manager.createTable(Constants.TABLE_PATIENT_NAME));
-        }catch (Exception exception){
+        } catch (PatientNotFoundException exception){
+            throw exception;
+        } catch (Exception exception){
             log.error(ExceptionMessage.builder()
                     .message(exception.getMessage())
                     .type(exception.getClass().getName())
@@ -135,7 +137,7 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
                     .line(StackTraceAnalyzer.getErrorInfo(exception, PatientDynamoAdapter.class.getPackageName()))
                     .build()
                     .toString());
-            throw new ChangePatientStatusException(String.format(Constants.ERROR_UPDATING_PATIENT, Constants.UPDATE_STATUS, Constants.ID.concat(" " + id)));
+            throw new ChangePatientStatusException(String.format(Constants.ERROR_UPDATING_PATIENT, Constants.UPDATE_STATUS));
         }
     }
 
@@ -174,7 +176,7 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
         try (DynamoDbManager manager = new DynamoDbManager(dynamoDbClient,enhancedClient)) {
             PatientEntity patientEntity = patientRepository.findPatientById(String.valueOf(id), manager.createTable(Constants.TABLE_PATIENT_NAME)).orElseThrow(() -> new PatientNotFoundException(String.format(Constants.PATIENT_NOT_FOUND, Constants.ID, id)));
             PatientEntity patientUpdated = patientMapper.toPatientEntity(patient);
-            patientUpdated.setPhoto(patient.getPhoto() != null || Constants.EMPTY.equals(patient.getPhoto())  ? patient.getPhoto() : patientEntity.getPhoto() );
+            patientUpdated.setPhoto(patientEntity.getPhoto());
             patientUpdated.setStatus(patientEntity.getStatus());
             return patientRepository.updatePatient(patientUpdated, manager.createTable(Constants.TABLE_PATIENT_NAME));
         } catch (PatientNotFoundException exception){

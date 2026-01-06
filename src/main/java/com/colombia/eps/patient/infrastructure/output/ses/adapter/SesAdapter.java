@@ -3,8 +3,9 @@ package com.colombia.eps.patient.infrastructure.output.ses.adapter;
 import com.colombia.eps.patient.domain.spi.ISesPersistencePort;
 import com.colombia.eps.patient.infrastructure.exception.CreateSesIdentityException;
 import com.colombia.eps.patient.infrastructure.exception.GetVerificationStatusInSesException;
+import com.colombia.eps.patient.infrastructure.exception.IdentityNotFoundException;
 import com.colombia.eps.patient.infrastructure.exception.SendEmailVerificationException;
-import com.colombia.eps.patient.infrastructure.exception.ValidateStatusSesRegistrationException;
+import com.colombia.eps.patient.infrastructure.exception.ValidateStatusSesException;
 import com.colombia.eps.patient.infrastructure.helper.Constants;
 import com.colombia.eps.patient.infrastructure.helper.ExceptionMessage;
 import com.colombia.eps.patient.infrastructure.helper.StackTraceAnalyzer;
@@ -17,8 +18,6 @@ import software.amazon.awssdk.services.ses.model.GetIdentityVerificationAttribut
 import software.amazon.awssdk.services.ses.model.GetIdentityVerificationAttributesResponse;
 import software.amazon.awssdk.services.ses.model.IdentityVerificationAttributes;
 import software.amazon.awssdk.services.ses.model.VerifyEmailIdentityRequest;
-import software.amazon.awssdk.services.sesv2.SesV2Client;
-import software.amazon.awssdk.services.sesv2.model.CreateEmailIdentityRequest;
 
 import java.time.LocalDateTime;
 
@@ -27,15 +26,14 @@ import java.time.LocalDateTime;
 @Slf4j
 public class SesAdapter implements ISesPersistencePort {
     private final SesClient sesClient;
-    private final SesV2Client sesV2Client;
     /**
      * @param emailAddress of patient to verify
      */
     @Override
     public void createSesIdentity(String emailAddress) {
         try {
-            createIdentity(emailAddress);
             log.debug("Verification initiated for: {}", emailAddress);
+            createIdentity(emailAddress);
         } catch (Exception exception) {
             log.error(ExceptionMessage.builder()
                     .message(exception.getMessage())
@@ -58,13 +56,16 @@ public class SesAdapter implements ISesPersistencePort {
             if (Constants.SUCCESS.equals(status)) {
                 log.debug(StatusLog.SUCCESS.format( emailAddress));
                 response= SesStatus.SUCCESS.getSentence();
+            } else if (Constants.NOT_FOUND.equals(status)) {
+                log.debug(StatusLog.NOT_FOUND.format(emailAddress));
+                throw new IdentityNotFoundException();
             } else {
                 log.debug(StatusLog.NOT_SUCCESS.format(emailAddress));
                 sendEmailVerification(emailAddress);
                 response= SesStatus.NOT_SUCCESS.getSentence();
             }
             return response;
-        } catch (GetVerificationStatusInSesException | SendEmailVerificationException exception) {
+        } catch (GetVerificationStatusInSesException | SendEmailVerificationException | IdentityNotFoundException exception) {
             throw exception;
         } catch (Exception exception) {
             log.error(ExceptionMessage.builder()
@@ -74,7 +75,7 @@ public class SesAdapter implements ISesPersistencePort {
                     .line(StackTraceAnalyzer.getErrorInfo(exception, SesAdapter.class.getPackageName()))
                     .build()
                     .toString());
-            throw new ValidateStatusSesRegistrationException();
+            throw new ValidateStatusSesException();
         }
     }
 

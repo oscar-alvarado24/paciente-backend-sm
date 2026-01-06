@@ -24,6 +24,8 @@ import java.util.List;
 @Slf4j
 public class CognitoAdapter implements ICognitoPersistencePort {
     private final CognitoIdentityProviderClient cognitoClient;
+    private final String userPoolId;
+    private final String groupName;
 
     /**
      * develop a process for create a patient that consists in create a user in user pool and add this user a patient group
@@ -32,7 +34,6 @@ public class CognitoAdapter implements ICognitoPersistencePort {
     @Override
     public void createPatientInUserPool(Patient patient) {
         try {
-            String userPoolId = System.getenv(Constants.VE_USER_POOL_ID);
             String email = patient.getEmail();
             String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + patient.getId() % 10000 + Constants.ASTERISK;
             AdminCreateUserResponse createUser = createNewUser(this.cognitoClient, userPoolId, email, password);
@@ -66,7 +67,6 @@ public class CognitoAdapter implements ICognitoPersistencePort {
             List<AttributeType> userAttributes = new ArrayList<>();
             userAttributes.add(AttributeType.builder().name(Constants.EMAIL).value(email).build());
             userAttributes.add(AttributeType.builder().name(Constants.EMAIL_VERIFIED).value(Constants.TRUE).build());
-
             AdminCreateUserRequest userRequest = AdminCreateUserRequest.builder().userPoolId(userPoolId).username(email).temporaryPassword(password).userAttributes(userAttributes).messageAction("SUPPRESS").build();
 
             return cognitoClient.adminCreateUser(userRequest);
@@ -92,7 +92,6 @@ public class CognitoAdapter implements ICognitoPersistencePort {
      */
     private void addUserToGroup(CognitoIdentityProviderClient cognitoClient, String userPoolId, String username, String name, String surname) {
         try {
-            String groupName = System.getenv(Constants.PATIENT_GROUP);
             AdminAddUserToGroupRequest addUserToGroupRequest = AdminAddUserToGroupRequest.builder().userPoolId(userPoolId).username(username).groupName(groupName).build();
 
             cognitoClient.adminAddUserToGroup(addUserToGroupRequest);

@@ -9,10 +9,6 @@ import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
-
-import java.util.List;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,6 +31,7 @@ public class PatientEntity {
     private String neighborhood;
     private Status status;
     private String photo;
+    private String program;
 
     @DynamoDbPartitionKey
     public String getId() {

@@ -6,36 +6,38 @@ import jakarta.validation.constraints.NotBlank;
 
 public record PatientRequest(
 
-        @Min(value = 10000, message = "La cedula debe tener minimo 5 digitos")
+        @Min(value = 10000, message = "La cedula debe tener mínimo 5 dígitos")
         int id,
 
-        @NotBlank(message = "El campo primer nombre no puede estar vacio")
+        @NotBlank(message = "El campo primer nombre no puede estar vacío")
         String firstName,
 
         String secondName,
 
-        @NotBlank(message = "El campo primer apellido no puede estar vacio")
+        @NotBlank(message = "El campo primer apellido no puede estar vacío")
         String firstSurName,
 
-        @NotBlank(message = "El campo segundo apellido no puede estar vacio")
+        @NotBlank(message = "El campo segundo apellido no puede estar vacío")
         String secondSurName,
 
-        @NotBlank(message = "El campo direccion no puede estar vacio")
+        @NotBlank(message = "El campo dirección no puede estar vacío")
         String address,
 
-        @NotBlank(message = "El campo email no puede estar vacio")
+        @NotBlank(message = "El campo email no puede estar vacío")
         @Email(message = "Por favor, ingrese una dirección de correo electrónico válida")
         String email,
 
-        @NotBlank(message = "El campo celular no puede estar vacio")
+        @NotBlank(message = "El campo celular no puede estar vacío")
         String cellPhone,
 
-        @NotBlank(message = "El campo tipo de residencia no puede estar vacio")
+        String landline,
+
+        @NotBlank(message = "El campo tipo de residencia no puede estar vacío")
         String residencesType,
 
         String descriptionResidence,
 
-        @NotBlank(message = "El campo barrio no puede estar vacio")
+        @NotBlank(message = "El campo barrio no puede estar vacío")
         String neighborhood,
 
         @NotBlank(message = "El campo programa es obligatorio")

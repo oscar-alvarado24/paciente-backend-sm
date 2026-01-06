@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ApplicationConstants {
     public static final String PATIENT_EXIST = "usuario_activo";
-    public static final String PATIENT_INACTIVE = "Usuario_inactivo";
+    public static final String PATIENT_INACTIVE = "usuario_inactivo";
     public static final String PATIENT_RETIRED = "usuario_retirado";
     public static final String MSG_ERROR_CRYPTO = "Error al ejecutar el proceso de %s del dato";
     public static final String ENCRYPT = "encriptado";

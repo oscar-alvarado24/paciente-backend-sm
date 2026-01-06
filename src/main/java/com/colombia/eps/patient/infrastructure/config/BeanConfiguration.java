@@ -19,6 +19,7 @@ import com.colombia.eps.patient.infrastructure.output.dynamo.mapper.IPatientEnti
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.IPatientRepository;
 import com.colombia.eps.patient.infrastructure.output.dynamo.repository.PatientRepository;
 import com.colombia.eps.patient.infrastructure.output.ses.adapter.SesAdapter;
+import com.colombia.eps.patient.infrastructure.output.sqs.adpter.SqsAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,6 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.ses.SesClient;
-import software.amazon.awssdk.services.sesv2.SesV2Client;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 
@@ -50,6 +50,8 @@ public class BeanConfiguration {
     private final URI uri = URI.create("http://localhost:4566");
     @Value("${aws.region}") String regionName;
     @Value("${aws.session.name}") String sessionName;
+    @Value("${cognito.user.pool.id}") String userPoolId;
+    @Value("${cognito.patient.group}") String patientGroup;
 
 
     @Bean
@@ -78,7 +80,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    @Profile("!local")
+    @Profile("!local & !test-integration")
     public DynamoDbClient cloudDynamoDbClient(
             @Value("${aws.region}") String region,
             @Value("${aws.dynamodb.access-key}") String accessKey,
@@ -96,6 +98,7 @@ public class BeanConfiguration {
     }
 
     @Bean
+    @Profile("!test-integration")
     public DynamoDbEnhancedClient dynamoDbEnhancedClient(DynamoDbClient dynamoDbClient) {
         return DynamoDbEnhancedClient.builder()
                 .dynamoDbClient(dynamoDbClient)
@@ -103,6 +106,7 @@ public class BeanConfiguration {
     }
 
     @Bean
+    @Profile("!test-integration")
     public DynamoDBTableValidator dynamoDBTableValidator(
             DynamoDbClient dynamoDbClient,
             @Value("${app.dynamodb.validation.enabled:true}") boolean validationEnabled) {
@@ -116,8 +120,9 @@ public class BeanConfiguration {
     }
 
     @Bean
+    @Profile("!test-integration")
     public ICognitoPersistencePort cognitoPersistencePort(CognitoIdentityProviderClient cognitoClient) {
-        return new CognitoAdapter(cognitoClient);
+        return new CognitoAdapter(cognitoClient,userPoolId,patientGroup);
     }
 
     @Bean
@@ -131,7 +136,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    @Profile("!local")
+    @Profile("!local & !test-integration")
     public CognitoIdentityProviderClient cloudCognitoClient(@Value("${aws.cognito.role}") String role,
                                                             @Value("${aws.cognito.access-key}") String accessKey,
                                                             @Value("${aws.cognito.secret-key}") String secretKey){
@@ -140,50 +145,33 @@ public class BeanConfiguration {
     }
 
     @Bean
+    @Profile("!test-integration")
     public IPatientPersistencePort patientPersistencePort(IPatientRepository patientRepository, IPatientEntityMapper patientMapper,DynamoDbClient dynamoDbClient, DynamoDbEnhancedClient dynamoDbEnhancedClient){
         return new PatientDynamoAdapter(patientRepository, patientMapper,dynamoDbClient,dynamoDbEnhancedClient);
     }
 
     @Bean
+    @Profile("!test-integration")
     public IPatientServicePort patientServicePort(IPatientPersistencePort patientPersistencePort, ICognitoPersistencePort cognitoPersistencePort, ISesPersistencePort sesPersistencePort, ISqsPersistencePort sqsPersistencePort){
         return new PatientUseCase(patientPersistencePort, cognitoPersistencePort, sesPersistencePort, sqsPersistencePort);
     }
 
     @Bean
+    @Profile("!test-integration")
     public IPatientEncryptionPersistencePort patientEncryptionPersistencePort(Encryption encryption) {
         return new PatientEncryptionAdapter(encryption);
     }
 
     @Bean
+    @Profile("!test-integration")
     public IPatientEncryptionServicePort patientEncryptionServicePort(IPatientEncryptionPersistencePort patientEncryptionPersistencePort){
         return new PatientEncryptionUseCase(patientEncryptionPersistencePort);
     }
 
     @Bean
-    public ISesPersistencePort sesPersistencePort(SesClient sesClient, SesV2Client sesV2Client){
-        return new SesAdapter(sesClient, sesV2Client);
-    }
-
-    @Bean
-    @Profile("local")
-    public SesV2Client localSesV2Client(){
-        return SesV2Client.builder()
-                .region(Region.of(regionName))
-                .credentialsProvider(this.localCredentials)
-                .endpointOverride(this.uri)
-                .build();
-    }
-
-    @Bean
-    @Profile("!local")
-    public SesV2Client cloudSesV2Client(@Value("${aws.ses.role}") String role,
-                                        @Value("${aws.ses.access-key}") String accessKey,
-                                        @Value("${aws.ses.secret-key}") String secretKey) {
-        StsAssumeRoleCredentialsProvider credential = createCredential(accessKey, secretKey, role, this.sessionName, Region.of(regionName));
-        return SesV2Client.builder()
-                .region(Region.of(regionName))
-                .credentialsProvider(credential)
-                .build();
+    @Profile("!test-integration")
+    public ISesPersistencePort sesPersistencePort(SesClient sesClient){
+        return new SesAdapter(sesClient);
     }
 
     @Bean
@@ -197,7 +185,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    @Profile("!local")
+    @Profile("!local & !test-integration")
     public SesClient cloudSesClient(@Value("${aws.ses.role}") String role,
                                         @Value("${aws.ses.access-key}") String accessKey,
                                         @Value("${aws.ses.secret-key}") String secretKey) {
@@ -219,7 +207,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    @Profile("!local")
+    @Profile("!local & !test-integration")
     public SqsClient cloudSqsClient(@Value("${aws.sqs.role}") String role,
                                     @Value("${aws.sqs.access-key}") String accessKey,
                                     @Value("${aws.sqs.secret-key}") String secretKey) {
@@ -228,5 +216,11 @@ public class BeanConfiguration {
                 .region(Region.of(regionName))
                 .credentialsProvider(credential)
                 .build();
+    }
+
+    @Bean
+    @Profile("!test-integration")
+    public ISqsPersistencePort sqsPersistencePort(SqsClient sqsClient, @Value("${aws.sqs.queue.url}") String queueUrl){
+        return new SqsAdapter(sqsClient, queueUrl);
     }
 }

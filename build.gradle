@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id "org.sonarqube" version "4.4.1.3373"
 	id 'jacoco'
 }
 group = 'com.colombia.eps'
@@ -16,30 +17,43 @@ java {
 // Configuración de JaCoCo
 jacoco {
 	toolVersion = "0.8.9"
-	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+	reportsDirectory = layout.buildDirectory.dir('reports')
 }
 
 // Configuración de las fuentes y clases para JaCoCo (excluyendo los paquetes y clases deseadas)
 jacocoTestReport {
 	dependsOn test // Ejecutar pruebas antes de generar el informe de cobertura
 	reports {
-		xml.required = false
+		xml.required = true
+		xml.outputLocation = layout.buildDirectory.file('reports/jacoco.xml')
 		csv.required = false
-		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+		html.outputLocation = layout.buildDirectory.dir('reports/jacocoHtml')
 	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: 'com/colombia/eps/patient/infrastructure/config/**')
-			fileTree(dir: it, exclude: 'com/colombia/eps/patient/application/**')
-			fileTree(dir: it, exclude: 'com/colombia/eps/patient/PatientApplication.class')
+			fileTree(it) {
+				exclude 'com/colombia/eps/patient/infrastructure/output/dynamo/config/**'
+				exclude 'com/colombia/eps/patient/infrastructure/encryption/**'
+				exclude 'com/colombia/eps/patient/infrastructure/config/**'
+				exclude 'com/colombia/eps/patient/PatientApplication.class'
+				exclude '**/dto/**'
+				exclude 'com/colombia/eps/patient/application/helper/**'
+				exclude 'com/colombia/eps/patient/domain/usecase/PatientEncryptionUseCase.class'
+			}
 		}))
 	}
 }
 
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+sonar {
+	properties {
+		property "sonar.gradle.skipCompile", "true"
+		property "sonar.projectKey", "oscar-alvarado24_paciente"
+		property "sonar.organization", "oscar-alvarado24"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports//jacoco.xml"
+		property "sonar.test", "src/test"
+		property "sonar.java.coveragePlugin", "jacoco"
+	}
 }
 
 configurations {
@@ -67,7 +81,7 @@ dependencies {
 	implementation 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
 
 	//aws
-	implementation platform('software.amazon.awssdk:bom:2.21.0')
+	implementation platform('software.amazon.awssdk:bom:2.40.13')
 	//Dynamo
 	implementation 'software.amazon.awssdk:dynamodb'
 	implementation 'software.amazon.awssdk:dynamodb-enhanced'
@@ -77,7 +91,6 @@ dependencies {
 	implementation 'software.amazon.awssdk:sts'
 	//ses
 	implementation 'software.amazon.awssdk:ses'
-	implementation 'software.amazon.awssdk:sesv2'
 	implementation 'software.amazon.awssdk:sdk-core'
 	//sqs
 	implementation 'software.amazon.awssdk:sqs'
@@ -93,14 +106,64 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation 'org.springframework.graphql:spring-graphql'
 	implementation 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.1.0'
-	//test
+
+	// ==================== TESTING DEPENDENCIES ====================
+
+	//test - Core testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation "org.testcontainers:localstack:1.19.0"
-	testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+
+	// GraphQL Testing
 	testImplementation 'org.springframework.graphql:spring-graphql-test'
+
+	// TestContainers - Core
+	testImplementation "org.testcontainers:testcontainers:1.20.6"
+	testImplementation "org.testcontainers:junit-jupiter:1.20.6"
+
+	// AssertJ - Para assertions más legibles
+	testImplementation 'org.assertj:assertj-core:3.24.1'
+
+	// Mockito - Para mocking
+	testImplementation 'org.mockito:mockito-core:5.3.0'
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.3.0'
+
+	// Lombok
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// WebFlux para pruebas de GraphQL (necesaria para WebClient)
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// === DEPENDENCIAS PARA AWAITILITY ===
+	testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	// Configuración para que los tests usen los recursos del proyecto
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+		showStandardStreams false
+	}
+}
+
+// Tarea para ejecutar solo tests de integración
+tasks.register('integrationTest', Test) {
+	useJUnitPlatform {
+		includeTags 'integration'
+	}
+	// Configuración específica para tests de integración
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+		showStandardStreams = true
+	}
+}
+
+// Tarea para ejecutar solo tests unitarios
+tasks.register('unitTest', Test) {
+	useJUnitPlatform {
+		excludeTags 'integration'
+	}
 }
