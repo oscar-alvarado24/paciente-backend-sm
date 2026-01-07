@@ -33,4 +33,5 @@ build/
 
 build/reports/*
 
-!build/reports/jacoco.xml
+!build/reports/jacoco/
+
