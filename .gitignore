@@ -1,6 +1,5 @@
 HELP.md
 .gradle
-build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -26,14 +25,12 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 *.lock
-*build
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+### Coverage ###
+build/
 
-### VS Code ###
-.vscode/
+!build/reports/
+
+build/reports/*
+
+!build/reports/jacoco.xml
