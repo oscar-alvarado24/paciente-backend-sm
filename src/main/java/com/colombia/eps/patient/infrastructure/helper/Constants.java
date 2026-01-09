@@ -33,5 +33,6 @@ public final class Constants {
     public static final String WELCOME = "welcome_patient";
     public static final Boolean SES_VERIFIED = Boolean.FALSE;
     public static final String ERROR_SEND_QUEUE = "Error enviando mensaje a SQS";
+    public static final String MSG_NOT_CREATE_PATIENT_IN_USER_POOL = "Error al crear al paciente con email %s, verificar estado";
 }
 

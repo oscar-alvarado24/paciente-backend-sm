@@ -45,8 +45,6 @@ public class ExceptionHandlers extends DataFetcherExceptionResolverAdapter {
             case SAVE_PHOTO_TO_PATIENT ->
                 graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.SAVE_PHOTO_TO_PATIENT.getMessage(), env, exceptionName.name());
 
-            case CREATE_PATIENT_IN_USER_POOL ->
-                graphQLError = graphQLError(ErrorType.INTERNAL_ERROR, ExceptionResponse.CREATE_PATIENT_IN_USER_POOL.getMessage(), env, exceptionName.name());
             default -> graphQLError = GraphqlErrorBuilder.newError().build();
         }
         return graphQLError;

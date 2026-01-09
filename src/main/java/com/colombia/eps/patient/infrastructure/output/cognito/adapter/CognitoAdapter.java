@@ -2,7 +2,6 @@ package com.colombia.eps.patient.infrastructure.output.cognito.adapter;
 
 import com.colombia.eps.patient.domain.model.Patient;
 import com.colombia.eps.patient.domain.spi.ICognitoPersistencePort;
-import com.colombia.eps.patient.infrastructure.exception.CreatePatientInUserPoolException;
 import com.colombia.eps.patient.infrastructure.exception.AddUserToGroupException;
 import com.colombia.eps.patient.infrastructure.exception.CreateUserInUserPoolException;
 import com.colombia.eps.patient.infrastructure.helper.ExceptionMessage;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminAddUserToGroupRequest;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 
 import java.time.LocalDateTime;
@@ -33,25 +31,10 @@ public class CognitoAdapter implements ICognitoPersistencePort {
      */
     @Override
     public void createPatientInUserPool(Patient patient) {
-        try {
-            String email = patient.getEmail();
-            String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + patient.getId() % 10000 + Constants.ASTERISK;
-            AdminCreateUserResponse createUser = createNewUser(this.cognitoClient, userPoolId, email, password);
-            if (createUser != null) {
-                addUserToGroup(this.cognitoClient, userPoolId, email, patient.getFirstName(), patient.getFirstSurName());
-            }
-        } catch (CreateUserInUserPoolException | AddUserToGroupException exception){
-            throw exception;
-        } catch (Exception exception) {
-            log.error(ExceptionMessage.builder()
-                    .message(exception.getMessage())
-                    .type(exception.getClass().getName())
-                    .hour(LocalDateTime.now().toString())
-                    .line(StackTraceAnalyzer.getErrorInfo(exception, CognitoAdapter.class.getPackageName()))
-                    .build()
-                    .toString());
-            throw new CreatePatientInUserPoolException();
-        }
+        String email = patient.getEmail();
+        String password = patient.getFirstName().toUpperCase() + patient.getFirstSurName().toLowerCase() + patient.getId() % 10000 + Constants.ASTERISK;
+        createNewUser(this.cognitoClient, userPoolId, email, password);
+        addUserToGroup(this.cognitoClient, userPoolId, email, patient.getFirstName(), patient.getFirstSurName());
     }
 
     /**
@@ -60,16 +43,15 @@ public class CognitoAdapter implements ICognitoPersistencePort {
      * @param userPoolId id of user pool
      * @param email email of user
      * @param password password of user
-     * @return response of create user
      */
-    private AdminCreateUserResponse createNewUser(CognitoIdentityProviderClient cognitoClient, String userPoolId, String email, String password) {
+    private void createNewUser(CognitoIdentityProviderClient cognitoClient, String userPoolId, String email, String password) {
         try {
             List<AttributeType> userAttributes = new ArrayList<>();
             userAttributes.add(AttributeType.builder().name(Constants.EMAIL).value(email).build());
             userAttributes.add(AttributeType.builder().name(Constants.EMAIL_VERIFIED).value(Constants.TRUE).build());
             AdminCreateUserRequest userRequest = AdminCreateUserRequest.builder().userPoolId(userPoolId).username(email).temporaryPassword(password).userAttributes(userAttributes).messageAction("SUPPRESS").build();
 
-            return cognitoClient.adminCreateUser(userRequest);
+            cognitoClient.adminCreateUser(userRequest);
         } catch (Exception exception) {
             log.error(ExceptionMessage.builder()
                     .message(exception.getMessage())

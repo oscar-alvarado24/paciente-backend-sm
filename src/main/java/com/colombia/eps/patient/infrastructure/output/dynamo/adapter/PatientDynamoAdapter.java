@@ -77,12 +77,15 @@ public class PatientDynamoAdapter implements IPatientPersistencePort {
         // thread 2: Consult by ID
         CompletableFuture<Optional<PatientEntity>> idSearch =
                 CompletableFuture.supplyAsync(() -> patientRepository.findPatientById(id, manager.createTable(Constants.TABLE_PATIENT_NAME)));
+        boolean emailExists = emailSearch.join().isPresent();
+        boolean idExists = idSearch.join().isPresent();
+
         String response;
-        if (emailSearch.join().isPresent() && idSearch.join().isEmpty()) {
-            response = PatientExist.EMAIL.format(email);
-        } else if (emailSearch.join().isEmpty() && idSearch.join().isPresent()) {
+        if (!emailExists && idExists) {
             response = PatientExist.ID.format(id);
-        } else if (emailSearch.join().isPresent() && idSearch.join().isPresent()) {
+        } else if (emailExists && !idExists) {
+            response = PatientExist.EMAIL.format(email);
+        } else if (emailExists) {
             response = PatientExist.BOTH.format(email, id);
         } else {
             response = PatientExist.NO_EXIST.format(email, id);

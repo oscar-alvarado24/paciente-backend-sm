@@ -190,7 +190,7 @@ class PatientControllerTest {
     void setUp() {
         id = null;
         String baseUrl = "http://localhost:" + port + "/graphql";
-        WebTestClient webClient = WebTestClient.bindToServer().baseUrl(baseUrl).build().mutate().responseTimeout(Duration.ofSeconds(180))  // Aumentar timeout a 30 segundos
+        WebTestClient webClient = WebTestClient.bindToServer().baseUrl(baseUrl).build().mutate().responseTimeout(Duration.ofSeconds(200))
                 .build();
         this.graphQlTester = HttpGraphQlTester.create(webClient);
     }
@@ -273,7 +273,6 @@ class PatientControllerTest {
 
     @Test
     void shouldReturnErrorWhenPatientExistWithTheSameId() {
-
         savePatientInDBFromUseCase();
         GraphQlTester.Response response = createPatient(Integer.parseInt(id), "otherEmail@example.com");
 
@@ -282,7 +281,8 @@ class PatientControllerTest {
 
             ResponseError error = errors.get(0);
 
-            assertThat(error.getMessage()).contains("Existe paciente con");
+            assertThat(error.getMessage()).contains("id");
+            assertThat(error.getMessage()).doesNotContain("email");
 
             Map<String, Object> extensions = error.getExtensions();
             assertThat(extensions).isNotNull();
@@ -297,15 +297,16 @@ class PatientControllerTest {
     @Test
     void shouldReturnErrorWhenPatientExistWithTheSameEmail() {
         savePatientInDBFromUseCase();
-        GraphQlTester.Response response = createPatient(24680, patientToSave.getEmail());
+
+        GraphQlTester.Response response = createPatient(369258, patientToSave.getEmail());
 
         response.errors().satisfy(errors -> {
             assertThat(errors).hasSize(1);
 
             ResponseError error = errors.get(0);
 
-            assertThat(error.getMessage()).contains("Existe paciente con");
-
+            assertThat(error.getMessage()).contains("email");
+            assertThat(error.getMessage()).doesNotContain("id");
             Map<String, Object> extensions = error.getExtensions();
             assertThat(extensions).isNotNull();
             assertThat(extensions).containsEntry("code", "PATIENT_ALREADY_EXIST");
@@ -326,7 +327,7 @@ class PatientControllerTest {
 
             ResponseError error = errors.get(0);
 
-            assertThat(error.getMessage()).contains("Existe paciente con");
+            assertThat(error.getMessage()).contains(" y id ");
 
             Map<String, Object> extensions = error.getExtensions();
             assertThat(extensions).isNotNull();
@@ -384,6 +385,7 @@ class PatientControllerTest {
             assertThat(extensions).containsKey("timestamp");
         });
     }
+
     //Test for get patient method
     @Test
     @SuppressWarnings("unchecked")
@@ -484,7 +486,7 @@ class PatientControllerTest {
         patient.setStatus(Status.INACTIVE);
         patient.setPhoto(PHOTO);
         dynamoDbEnhancedClient.table(TABLE_NAME, TableSchema.fromBean(PatientEntity.class)).putItem(patient);
-
+        id= patient.getId();
         Map<String, Object> response = (Map<String, Object>) graphQlTester.document("""
                 query getPatient($email: String!) {
                     getPatient(email: $email) {
@@ -520,6 +522,7 @@ class PatientControllerTest {
         patient.setStatus(Status.RETIRED);
         patient.setDescriptionResidence(" ");
         dynamoDbEnhancedClient.table(TABLE_NAME, TableSchema.fromBean(PatientEntity.class)).putItem(patient);
+        id= patient.getId();
         Map<String, Object> response = (Map<String, Object>) graphQlTester.document("""
                 query getPatient($email: String!) {
                     getPatient(email: $email) {

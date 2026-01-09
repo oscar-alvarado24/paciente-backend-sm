@@ -9,8 +9,7 @@ public enum ExceptionResponse {
     CREATE_SES_IDENTITY("Error al crear la identidad en ses"),
     GET_VERIFICATION_STATUS_IN_SES("Error al obtener el estado de verificación de ses"),
     GET_PATIENT("Error al obtener los datos del paciente"),
-    SAVE_PHOTO_TO_PATIENT("Error al guardar la foto"),
-    CREATE_PATIENT_IN_USER_POOL("Error al crear el paciente en el user pool");
+    SAVE_PHOTO_TO_PATIENT("Error al guardar la foto");
     private final String  message;
 
     ExceptionResponse(String message) {

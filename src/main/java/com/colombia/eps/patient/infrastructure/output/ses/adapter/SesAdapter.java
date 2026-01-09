@@ -5,7 +5,6 @@ import com.colombia.eps.patient.infrastructure.exception.CreateSesIdentityExcept
 import com.colombia.eps.patient.infrastructure.exception.GetVerificationStatusInSesException;
 import com.colombia.eps.patient.infrastructure.exception.IdentityNotFoundException;
 import com.colombia.eps.patient.infrastructure.exception.SendEmailVerificationException;
-import com.colombia.eps.patient.infrastructure.exception.ValidateStatusSesException;
 import com.colombia.eps.patient.infrastructure.helper.Constants;
 import com.colombia.eps.patient.infrastructure.helper.ExceptionMessage;
 import com.colombia.eps.patient.infrastructure.helper.StackTraceAnalyzer;
@@ -20,6 +19,7 @@ import software.amazon.awssdk.services.ses.model.IdentityVerificationAttributes;
 import software.amazon.awssdk.services.ses.model.VerifyEmailIdentityRequest;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -50,33 +50,20 @@ public class SesAdapter implements ISesPersistencePort {
      * @param emailAddress of patient to validate status
      */
     public String validateStatusSesRegistration(String emailAddress) {
-        try {
-            String status = getVerificationStatus(emailAddress);
-            String response;
-            if (Constants.SUCCESS.equals(status)) {
-                log.debug(StatusLog.SUCCESS.format( emailAddress));
-                response= SesStatus.SUCCESS.getSentence();
-            } else if (Constants.NOT_FOUND.equals(status)) {
-                log.debug(StatusLog.NOT_FOUND.format(emailAddress));
-                throw new IdentityNotFoundException();
-            } else {
-                log.debug(StatusLog.NOT_SUCCESS.format(emailAddress));
-                sendEmailVerification(emailAddress);
-                response= SesStatus.NOT_SUCCESS.getSentence();
-            }
-            return response;
-        } catch (GetVerificationStatusInSesException | SendEmailVerificationException | IdentityNotFoundException exception) {
-            throw exception;
-        } catch (Exception exception) {
-            log.error(ExceptionMessage.builder()
-                    .message(exception.getMessage())
-                    .type(exception.getClass().getName())
-                    .hour(LocalDateTime.now().toString())
-                    .line(StackTraceAnalyzer.getErrorInfo(exception, SesAdapter.class.getPackageName()))
-                    .build()
-                    .toString());
-            throw new ValidateStatusSesException();
+        String status = getVerificationStatus(emailAddress);
+        String response;
+        if (Constants.SUCCESS.equals(status)) {
+            log.debug(StatusLog.SUCCESS.format( emailAddress));
+            response= SesStatus.SUCCESS.getSentence();
+        } else if (Constants.NOT_FOUND.equals(status)) {
+            log.debug(StatusLog.NOT_FOUND.format(emailAddress));
+            throw new IdentityNotFoundException();
+        } else {
+            log.debug(StatusLog.NOT_SUCCESS.format(emailAddress));
+            sendEmailVerification(emailAddress);
+            response= SesStatus.NOT_SUCCESS.getSentence();
         }
+        return response;
     }
 
     /**
@@ -107,11 +94,11 @@ public class SesAdapter implements ISesPersistencePort {
             GetIdentityVerificationAttributesResponse response =
                     this.sesClient.getIdentityVerificationAttributes(request);
 
-            IdentityVerificationAttributes attributes =
-                    response.verificationAttributes().get(emailAddress);
+            Optional<IdentityVerificationAttributes> attributes =
+                    Optional.ofNullable(response.verificationAttributes().get(emailAddress));
 
-            if (attributes != null) {
-                return attributes.verificationStatus().toString();
+            if (attributes.isPresent()) {
+                return attributes.get().verificationStatus().toString();
 
             } else {
                 log.debug(StatusLog.NOT_FOUND.format(emailAddress));
@@ -130,7 +117,7 @@ public class SesAdapter implements ISesPersistencePort {
         }
     }
 
-    public void sendEmailVerification(String emailAddress) {
+    private void sendEmailVerification(String emailAddress) {
         try {
             VerifyEmailIdentityRequest request = VerifyEmailIdentityRequest.builder()
                     .emailAddress(emailAddress)

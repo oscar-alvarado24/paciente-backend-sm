@@ -13,5 +13,4 @@ public enum ExceptionName {
     UPDATE_PATIENT,
     CREATE_USER_IN_USER_POOL,
     ADD_USER_TO_GROUP,
-    CREATE_PATIENT_IN_USER_POOL
 }
