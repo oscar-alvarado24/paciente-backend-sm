@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SesAdapterTest {
+class SesAdapterTest {
     @Mock
     private SesClient sesClient;
 

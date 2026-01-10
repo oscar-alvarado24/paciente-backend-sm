@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PatientDynamoAdapterTest {
+class PatientDynamoAdapterTest {
 
     @Mock
     private IPatientRepository patientRepository;
@@ -36,8 +36,9 @@ public class PatientDynamoAdapterTest {
 
     @Test
     void testCreatePatientShouldCatchException() {
+        Patient patient = new Patient();
         when(patientEntityMapper.toPatientEntity(any(Patient.class))).thenThrow(new RuntimeException("Simulación de error"));
 
-        assertThrows(PatienNotCretedException.class, () -> patientDynamoAdapter.createPatient(new Patient()));
+        assertThrows(PatienNotCretedException.class, () -> patientDynamoAdapter.createPatient(patient));
     }
 }

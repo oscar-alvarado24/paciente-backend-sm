@@ -49,10 +49,21 @@ sonar {
 		property "sonar.projectKey", "oscar-alvarado24_paciente"
 		property "sonar.organization", "oscar-alvarado24"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.projectVersion", "0.0.1-SNAPSHOT"
 		property "sonar.sourceEncoding", "UTF-8"
 		property "sonar.test", "src/test"
 		property "sonar.java.coveragePlugin", "jacoco"
 		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+		property "sonar.coverage.exclusions", [
+				"**/infrastructure/output/dynamo/config/**/*.java",
+				"**/infrastructure/encryption/**/*.java",
+				"**/infrastructure/config/**/*.java",
+				"**/PatientApplication.java",
+				"**/dto/**/*.java",
+				"**/application/helper/**/*.java",
+				"**/domain/usecase/PatientEncryptionUseCase.java"
+		].join(",")
+		property "sonar.exclusions", "**/PatientApplication.java"
 	}
 }
 
